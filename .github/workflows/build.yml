@@ -1,0 +1,43 @@
+name: 构建 Magisk 模块
+
+on:
+  workflow_dispatch:
+    inputs:
+      rom:
+        description: 'ROM 版本号 (e.g., OS2.0.202.0.VOZCNXM)'
+        required: true
+      url:
+        description: 'ROM 下载链接'
+        required: true
+      android:
+        description: '目标 Android 版本 (默认15)'
+        required: false
+        default: '15'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 克隆仓库
+        uses: actions/checkout@v3
+
+      - name: 🛠 安装依赖
+        run: |
+          sudo apt update
+          sudo apt install -y zip unzip python3-pip
+          pip install --user pipx
+          pipx ensurepath
+          pipx install git+https://github.com/5ec1cff/payload-dumper
+
+      - name: 🧪 构建模块
+        run: |
+          bash ./build.sh --rom "${{ github.event.inputs.rom }}" \
+                          --url "${{ github.event.inputs.url }}" \
+                          --android "${{ github.event.inputs.android }}"
+
+      - name: 📦 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: "Magisk模块-${{ github.event.inputs.rom }}"
+          path: dist/*.zip
