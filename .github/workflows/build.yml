@@ -40,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: "${{ github.event.inputs.rom }}.zip"
-          path: dist/${{ github.event.inputs.rom }}.zip
+          path: tmp/release/
