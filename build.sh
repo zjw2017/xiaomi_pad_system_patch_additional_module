@@ -49,25 +49,25 @@ if [[ -z "$input_rom_version" || -z "$input_rom_url" ]]; then
   exit 1
 fi
 
-# echo "🧹 清理并准备临时目录..."
-# rm -rf "$TMPDir"
-# mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
+echo "🧹 清理并准备临时目录..."
+rm -rf "$TMPDir"
+mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
 
-# echo "🔍 检查 payload_dumper 是否可用..."
-# if ! command -v payload_dumper >/dev/null 2>&1; then
-#   echo "❌ 错误：payload_dumper 未安装或不在 PATH 中。" >&2
-#   echo "请安装它，例如：" >&2
-#   echo "  pipx install git+https://github.com/5ec1cff/payload-dumper" >&2
-#   exit 1
-# fi
+echo "🔍 检查 payload_dumper 是否可用..."
+if ! command -v payload_dumper >/dev/null 2>&1; then
+  echo "❌ 错误：payload_dumper 未安装或不在 PATH 中。" >&2
+  echo "请安装它，例如：" >&2
+  echo "  pipx install git+https://github.com/5ec1cff/payload-dumper" >&2
+  exit 1
+fi
 
-# echo "⬇️ 获取 system_ext.img..."
-# payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
+echo "⬇️ 获取 system_ext.img..."
+payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
 
-# if [ ! -f "${payload_img_dir}system_ext.img" ]; then
-#   echo "❌ 找不到 system_ext.img" >&2
-#   exit 1
-# fi
+if [ ! -f "${payload_img_dir}system_ext.img" ]; then
+  echo "❌ 找不到 system_ext.img" >&2
+  exit 1
+fi
 
 echo "📦 解包 system_ext.img..."
 $ExtractErofs -i "${payload_img_dir}system_ext.img" -x -c $workfile/common/system_ext_unpak_list.txt -o "$pre_patch_file_dir"
