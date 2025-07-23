@@ -1,9 +1,11 @@
 #!/bin/bash
+# shellcheck disable=SC2086
 set -e
 
 # 获取脚本所在目录（避免相对路径错误）
 workfile="$(cd "$(dirname "$0")" && pwd)"
 ExtractErofs="$workfile/common/binary/extract.erofs"
+chmod +x $ExtractErofs
 
 # 工作目录和输出目录
 TMPDir="$workfile/tmp/"
