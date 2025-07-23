@@ -73,23 +73,27 @@ echo "📦 解包 system_ext.img..."
 $ExtractErofs -i "${payload_img_dir}system_ext.img" -x -c $workfile/common/system_ext_unpak_list.txt -o "$pre_patch_file_dir"
 
 # 检查提取文件
-system_extunpak_list_file="$workfile/common/system_ext_unpak_list.txt"
+system_ext_unpak_list_file="$workfile/common/system_ext_unpak_list.txt"
 echo "✅ 校验解包文件是否提取成功..."
 
-if [ ! -f "$system_extunpak_list_file" ]; then
-  echo "❌ 缺失列表文件: $system_extunpak_list_file" >&2
+if [ ! -f "$system_ext_unpak_list_file" ]; then
+  echo "❌ 缺失列表文件: $system_ext_unpak_list_file" >&2
   exit 1
 fi
 
-while IFS= read -r line; do
+while IFS= read -r line || [[ -n "$line" ]]; do
   file=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
   [ -z "$file" ] && continue
+
   full_path="${pre_patch_file_dir}system_ext${file}"
+
+  echo "🔍 检查文件: $full_path"
+
   if [ ! -f "$full_path" ]; then
     echo "❌ 缺失文件: system_ext${file}" >&2
     exit 1
   fi
-done < "$system_extunpak_list_file"
+done < "$system_ext_unpak_list_file"
 
 echo "📁 复制补丁模组源码..."
 cp -a "$workfile/mods/." "$patch_mods_dir"
