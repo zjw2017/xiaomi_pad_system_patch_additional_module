@@ -69,17 +69,17 @@ if [ ! -f "${payload_img_dir}system_ext.img" ]; then
   exit 1
 fi
 
+if [ ! -f "$system_ext_unpak_list_file" ]; then
+  echo "❌ 缺失列表文件: $system_ext_unpak_list_file" >&2
+  exit 1
+fi
+
 echo "📦 解包 system_ext.img..."
 $ExtractErofs -i "${payload_img_dir}system_ext.img" -x -c $workfile/common/system_ext_unpak_list.txt -o "$pre_patch_file_dir"
 
 # 检查提取文件
 system_ext_unpak_list_file="$workfile/common/system_ext_unpak_list.txt"
 echo "✅ 校验解包文件是否提取成功..."
-
-if [ ! -f "$system_ext_unpak_list_file" ]; then
-  echo "❌ 缺失列表文件: $system_ext_unpak_list_file" >&2
-  exit 1
-fi
 
 while IFS= read -r line || [[ -n "$line" ]]; do
   file=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
