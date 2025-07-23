@@ -1,0 +1,2 @@
+/framework/miui-services.jar
+/priv-app/MiuiSystemUI/MiuiSystemUI.apk

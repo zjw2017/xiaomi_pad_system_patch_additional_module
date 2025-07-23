@@ -49,45 +49,47 @@ if [[ -z "$input_rom_version" || -z "$input_rom_url" ]]; then
   exit 1
 fi
 
-echo "🧹 清理并准备临时目录..."
-rm -rf "$TMPDir"
-mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
+# echo "🧹 清理并准备临时目录..."
+# rm -rf "$TMPDir"
+# mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
 
-echo "🔍 检查 payload_dumper 是否可用..."
-if ! command -v payload_dumper >/dev/null 2>&1; then
-  echo "❌ 错误：payload_dumper 未安装或不在 PATH 中。" >&2
-  echo "请安装它，例如：" >&2
-  echo "  pipx install git+https://github.com/5ec1cff/payload-dumper" >&2
-  exit 1
-fi
+# echo "🔍 检查 payload_dumper 是否可用..."
+# if ! command -v payload_dumper >/dev/null 2>&1; then
+#   echo "❌ 错误：payload_dumper 未安装或不在 PATH 中。" >&2
+#   echo "请安装它，例如：" >&2
+#   echo "  pipx install git+https://github.com/5ec1cff/payload-dumper" >&2
+#   exit 1
+# fi
 
-echo "⬇️ 获取 system_ext.img..."
-payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
+# echo "⬇️ 获取 system_ext.img..."
+# payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
 
-if [ ! -f "${payload_img_dir}system_ext.img" ]; then
-  echo "❌ 找不到 system_ext.img" >&2
-  exit 1
-fi
+# if [ ! -f "${payload_img_dir}system_ext.img" ]; then
+#   echo "❌ 找不到 system_ext.img" >&2
+#   exit 1
+# fi
 
 echo "📦 解包 system_ext.img..."
-$ExtractErofs -i "${payload_img_dir}system_ext.img" \
-  -X "framework/miui-services.jar" \
-  -X "priv-app/MiuiSystemUI/MiuiSystemUI.apk" \
-  -o "$pre_patch_file_dir"
+$ExtractErofs -i "${payload_img_dir}system_ext.img" -x -c $workfile/common/system_ext_unpak_list.txt -o "$pre_patch_file_dir"
 
 # 检查提取文件
-required_files=(
-  "system_ext/framework/miui-services.jar"
-  "system_ext/priv-app/MiuiSystemUI/MiuiSystemUI.apk"
-)
-
+system_extunpak_list_file="$workfile/common/system_ext_unpak_list.txt"
 echo "✅ 校验解包文件是否提取成功..."
-for file in "${required_files[@]}"; do
-  if [ ! -f "${pre_patch_file_dir}${file}" ]; then
-    echo "❌ 缺失文件: ${file}" >&2
+
+if [ ! -f "$system_extunpak_list_file" ]; then
+  echo "❌ 缺失列表文件: $system_extunpak_list_file" >&2
+  exit 1
+fi
+
+while IFS= read -r line; do
+  file=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+  [ -z "$file" ] && continue
+  full_path="${pre_patch_file_dir}system_ext${file}"
+  if [ ! -f "$full_path" ]; then
+    echo "❌ 缺失文件: system_ext${file}" >&2
     exit 1
   fi
-done
+done < "$system_extunpak_list_file"
 
 echo "📁 复制补丁模组源码..."
 cp -a "$workfile/mods/." "$patch_mods_dir"
