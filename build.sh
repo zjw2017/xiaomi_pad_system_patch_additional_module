@@ -69,8 +69,7 @@ fi
 
 echo "📦 解包 system_ext.img..."
 $ExtractErofs -i "${payload_img_dir}system_ext.img" \
-  -X /framework/miui-services.jar \
-  -X /priv-app/MiuiSystemUI/MiuiSystemUI.apk \
+  -X "/framework/miui-services.jar" "priv-app/MiuiSystemUI/MiuiSystemUI.apk" \
   -o "$pre_patch_file_dir"
 
 # 检查提取文件
