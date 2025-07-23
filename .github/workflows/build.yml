@@ -39,5 +39,5 @@ jobs:
       - name: 📦 上传构建产物
         uses: actions/upload-artifact@v4
         with:
-          name: "Magisk模块-${{ github.event.inputs.rom }}"
-          path: dist/*.zip
+          name: "${{ github.event.inputs.rom }}.zip"
+          path: dist/${{ github.event.inputs.rom }}.zip
