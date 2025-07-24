@@ -49,6 +49,18 @@ if [[ -z "$input_rom_version" || -z "$input_rom_url" ]]; then
   exit 1
 fi
 
+# 校验 Android 版本，目前仅支持 14 和 15，保留未来扩展空间
+case "$input_android_target_version" in
+  14|15)
+    # 支持的版本，继续执行
+    ;;
+  *)
+    echo "❌ 错误：不支持的 Android 版本：$input_android_target_version，仅支持 14 或 15。" >&2
+    exit 1
+    ;;
+esac
+
+
 echo "🧹 清理并准备临时目录..."
 rm -rf "$TMPDir"
 mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"

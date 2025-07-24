@@ -10,7 +10,26 @@ ls -lh $workfile/../../
 
 ### 去除分屏黑名单
 # 查找原函数位置
-smali_mod1=$(find $workfile/miui-services/smali/com/android/server/wm/ -type f -iname "MiuiSplitScreenImpl.smali")
+get_Mod1Smali_path() {
+  local version="$1"
+  local path=""
+  if [ "$version" -ge 15 ]; then
+    path=$(find "$workfile/miui-services/smali/com/android/server/wm/" -type f -iname "MiuiSplitScreenImpl.smali")
+  elif [ "$version" -eq 14 ]; then
+    path=$(find "$workfile/miui-services/smali/com/android/server/wm/" -type f -iname "ActivityTaskManagerServiceImpl.smali")
+  else
+    echo "❌ Unsupported Android version for Mod1: $version"
+    exit 1
+  fi
+
+  if [ -z "$path" ]; then
+    echo "❌ mod1 smali not found"
+    exit 1
+  fi
+
+  echo "$path"
+}
+smali_mod1=$(get_Mod1Smali_path "$android_target_version")
 start_line_mod1=$(grep -n -m 1 ".method public inResizeBlackList(Ljava/lang/String;)Z" $smali_mod1 | cut -d: -f1)
 # 在start_line_mod1的上一行插入新方法-getDisableResizeBlackListEnabled
 insert_line_mod1=$((start_line_mod1 - 1))
@@ -23,7 +42,7 @@ actual_end_line_mod1=$((start_line_mod1 + end_line_mod1 - 1))
 # 删除原方法
 sed -i "${start_line_mod1},${actual_end_line_mod1}d" $smali_mod1
 # 插入新方法
-sed -i "$((start_line_mod1 - 1))r $workfile/add1.smali" $smali_mod1
+sed -i "$((start_line_mod1 - 1))r $workfile/$android_target_version/add1.smali" $smali_mod1
 
 ### 调整小窗数量
 smali_mod2=$(find $workfile/miui-services/smali/com/android/server/wm/ -type f -iname "MiuiFreeFormStackDisplayStrategy.smali")
