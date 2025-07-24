@@ -5,7 +5,30 @@ workfile=${0%/*}
 APKEditor="java -jar $workfile/../../../common/jar/APKEditor.jar"
 $APKEditor d -f -i $workfile/MiuiSystemUI.apk -o $workfile/MiuiSystemUI
 
+
 ### 竖屏上下分屏
+patch_A14_VerticalSplit() {
+    ### 竖屏上下分屏A14
+    # 查找原函数位置
+    local SplitUtilsImplSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/common/split -type f -iname "SplitUtilsImpl.smali")
+    local start_line_updateConfig=$(grep -n -m 1 ".method public final updateConfig(Landroid/content/Context;)V" "$SplitUtilsImplSmali" | cut -d: -f1)
+
+    # 在start_line_updateConfig的上一行插入新方法
+    local insert_line_getVerticalSplitValue=$((start_line_updateConfig - 1))
+    sed -i "${insert_line_getVerticalSplitValue}r $workfile/getVerticalSplitValue.smali" "$SplitUtilsImplSmali"
+
+    # 从start_line_isLeftRightSplitForZ开始查找 "const/16 v1, 0x258"
+    local start_line_updateConfig=$(grep -n -m 1 ".method public final updateConfig(Landroid/content/Context;)V" "$SplitUtilsImplSmali" | cut -d: -f1)
+    local find_line_updateConfig_relative_v1_const=$(tail -n +"$start_line_updateConfig" "$SplitUtilsImplSmali" | grep -n -m 1 "const/16 v1, 0x258" | cut -d: -f1)
+    local end_line_updateConfig_v1_const=$((start_line_updateConfig + find_line_updateConfig_relative_v1_const - 1))
+
+    # 删除end_line那一行
+    sed -i "${end_line_updateConfig_v1_const}d" "$SplitUtilsImplSmali"
+    # 在end_line原来的位置插入Insert_getVerticalSplitValue_Func.smali
+    sed -i "${end_line_updateConfig_v1_const}r $workfile/$android_target_version/Insert_getVerticalSplitValue_Func.smali" "$SplitUtilsImplSmali"
+
+    echo '修补verticalSplit完成'
+}
 patch_VerticalSplit() {
     ### 竖屏上下分屏
     # 查找原函数位置
@@ -29,12 +52,52 @@ patch_VerticalSplit() {
     echo '修补verticalSplit完成'
 }
 
+patch_VerticalSplitEntry() {
+  # 如果系统版本 >= 16，表示原生已支持，跳过 patch
+  if [ "$android_target_version" -ge 16 ]; then
+    echo "✅ Android $android_target_version 已支持 vertical split，无需 patch"
+    return 0
+  fi
 
+  case "$android_target_version" in
+    15)
+      patch_VerticalSplit
+      ;;
+    14)
+      patch_A14_VerticalSplit
+      ;;
+    *)
+      echo "❌ Unsupported Android version for vertical split patch: $android_target_version"
+      exit 1
+      ;;
+  esac
+}
 
 ### 所有应用支持无极小窗
 patch_CvwFull() {
 
-    local MiuiInfinityModeSizeLevelConfigSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuiinfinitymode -type f -iname "MiuiInfinityModeSizeLevelConfig.smali")
+    get_MiuiInfinityModeSizeLevelConfigSmali_path() {
+      local version="$1"
+      local path=""
+
+      if [ "$version" -ge 15 ]; then
+        path=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/multitasking/miuiinfinitymode -type f -iname "MiuiInfinityModeSizeLevelConfig.smali")
+      elif [ "$version" -eq 14 ]; then
+        path=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/miuifreeform -type f -iname "MiuiInfinityModeSizeLevelConfig.smali")
+      else
+        echo "❌ Unsupported Android version for MiuiInfinityModeSizeLevelConfig: $version"
+        exit 1
+      fi
+
+      if [ -z "$path" ]; then
+        echo "❌ MiuiInfinityModeSizeLevelConfig.smali not found"
+        exit 1
+      fi
+
+      echo "$path"
+    }
+
+    local MiuiInfinityModeSizeLevelConfigSmali=$(get_MiuiInfinityModeSizeLevelConfigSmali_path "$android_target_version")
     
     local getLevelTypeForString_start_line=$(grep -n -m 1 ".method public getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
     # 在getLevelTypeForString_start_line的上一行插入新方法-getCvwFull_Func
@@ -50,7 +113,7 @@ patch_CvwFull() {
     # 删除原方法
     sed -i "${getLevelTypeForString_start_line},${actual_getLevelTypeForString_end_line}d" $MiuiInfinityModeSizeLevelConfigSmali
     # 插入Patch后的方法
-    sed -i "$((getLevelTypeForString_start_line - 1))r $workfile/getLevelTypeForString.smali" $MiuiInfinityModeSizeLevelConfigSmali
+    sed -i "$((getLevelTypeForString_start_line - 1))r $workfile/$android_target_version/getLevelTypeForString.smali" $MiuiInfinityModeSizeLevelConfigSmali
 
     # 重新查找getLevelTypeForComponentName_start_line
     local getLevelTypeForComponentName_start_line=$(grep -n -m 1 ".method public getLevelType(Landroid/content/ComponentName;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
@@ -61,9 +124,31 @@ patch_CvwFull() {
     # 删除原方法
     sed -i "${getLevelTypeForComponentName_start_line},${actual_getLevelTypeForComponentName_end_line}d" $MiuiInfinityModeSizeLevelConfigSmali
     # 插入Patch后的方法
-    sed -i "$((getLevelTypeForComponentName_start_line - 1))r $workfile/getLevelTypeForComponentName.smali" $MiuiInfinityModeSizeLevelConfigSmali
+    sed -i "$((getLevelTypeForComponentName_start_line - 1))r $workfile/$android_target_version/getLevelTypeForComponentName.smali" $MiuiInfinityModeSizeLevelConfigSmali
 
-    local MiuiInfinityModeLevelPolicyCompatSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuiinfinitymode -type f -iname "MiuiInfinityModeLevelPolicyCompat.smali")
+    get_MiuiInfinityModeLevelPolicyCompatSmali_path() {
+      local version="$1"
+      local path=""
+
+      if [ "$version" -ge 15 ]; then
+        path=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/multitasking/miuiinfinitymode -type f -iname "MiuiInfinityModeLevelPolicyCompat.smali")
+      elif [ "$version" -eq 14 ]; then
+        path=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/miuifreeform/infinitymode -type f -iname "MiuiInfinityModeLevelPolicyCompat.smali")
+      else
+        echo "❌ Unsupported Android version for MiuiInfinityModeLevelPolicyCompat: $version"
+        exit 1
+      fi
+
+      if [ -z "$path" ]; then
+        echo "❌ MiuiInfinityModeLevelPolicyCompat.smali not found"
+        exit 1
+      fi
+
+      echo "$path"
+    }
+
+
+    local MiuiInfinityModeLevelPolicyCompatSmali=$(get_MiuiInfinityModeLevelPolicyCompatSmali_path "$android_target_version")
 
     local useNewLevelPolicyForString_start_line=$(grep -n -m 1 ".method public useNewLevelPolicy(Ljava/lang/String;)Z" "$MiuiInfinityModeLevelPolicyCompatSmali" | cut -d: -f1)
     # 在useNewLevelPolicyForString_start_line的上一行插入新方法-getCvwFull_Func
@@ -79,12 +164,31 @@ patch_CvwFull() {
     # 删除原方法
     sed -i "${useNewLevelPolicyForString_start_line},${actual_useNewLevelPolicyForString_end_line}d" $MiuiInfinityModeLevelPolicyCompatSmali
     # 插入Patch后的方法
-    sed -i "$((useNewLevelPolicyForString_start_line - 1))r $workfile/useNewLevelPolicyForString.smali" $MiuiInfinityModeLevelPolicyCompatSmali
+    sed -i "$((useNewLevelPolicyForString_start_line - 1))r $workfile/$android_target_version/useNewLevelPolicyForString.smali" $MiuiInfinityModeLevelPolicyCompatSmali
 
     echo '修补CvwFull完成'
 }
 
+
 ### 隐藏自由窗口小白条
+patch_A14_DisableFreeformBottomCaption() {
+
+    local MiuiBaseWindowDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuiwindowdecor -type f -iname "MiuiBaseWindowDecoration.smali")
+    
+    # 查找createBottomCaption_start_line
+    local createBottomCaption_start_line=$(grep -n -m 1 ".method private createBottomCaption()Lcom/android/wm/shell/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;" "$MiuiBaseWindowDecorationSmali" | cut -d: -f1)
+    # 从createBottomCaption_start_line开始查找第一个.end method行号
+    local createBottomCaption_end_line=$(tail -n +"$createBottomCaption_start_line" $MiuiBaseWindowDecorationSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    # 计算.end method的行号
+    local actual_createBottomCaption_end_line=$((createBottomCaption_start_line + createBottomCaption_end_line - 1))
+    # 删除原方法
+    sed -i "${createBottomCaption_start_line},${actual_createBottomCaption_end_line}d" $MiuiBaseWindowDecorationSmali
+    # 插入Patch后的方法
+    sed -i "$((createBottomCaption_start_line - 1))r $workfile/$android_target_version/createBottomCaption.smali" $MiuiBaseWindowDecorationSmali
+
+    echo '修补隐藏自由窗口小白条完成'
+}
+
 patch_DisableFreeformBottomCaption() {
 
     local MiuiBottomDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor -type f -iname "MiuiBottomDecoration.smali")
@@ -103,7 +207,37 @@ patch_DisableFreeformBottomCaption() {
     echo '修补隐藏自由窗口小白条完成'
 }
 
+patch_DisableFreeformBottomCaptionEntry() {
+  if [ "$android_target_version" -ge 15 ]; then
+    patch_DisableFreeformBottomCaption
+  elif [ "$android_target_version" -eq 14 ]; then
+    patch_A14_DisableFreeformBottomCaption
+  else
+    echo "❌ Unsupported Android version for disable freeform bottom caption patch: $android_target_version"
+    exit 1
+  fi
+}
+
+
 ### 沉浸自由窗口小白条
+patch_A14_ImmerseFreeformBottomCaption() {
+
+    local MiuiBaseWindowDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuiwindowdecor -type f -iname "MiuiBaseWindowDecoration.smali")
+    
+    # 查找inBottomCaptionInsetsBlackList_start_line
+    local inBottomCaptionInsetsBlackList_start_line=$(grep -n -m 1 ".method private inBottomCaptionInsetsBlackList()Z" "$MiuiBaseWindowDecorationSmali" | cut -d: -f1)
+    # 从createBottomCaption_start_line开始查找第一个.end method行号
+    local inBottomCaptionInsetsBlackList_end_line=$(tail -n +"$inBottomCaptionInsetsBlackList_start_line" $MiuiBaseWindowDecorationSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    # 计算.end method的行号
+    local actual_inBottomCaptionInsetsBlackList_end_line=$((inBottomCaptionInsetsBlackList_start_line + inBottomCaptionInsetsBlackList_end_line - 1))
+    # 删除原方法
+    sed -i "${inBottomCaptionInsetsBlackList_start_line},${actual_inBottomCaptionInsetsBlackList_end_line}d" $MiuiBaseWindowDecorationSmali
+    # 插入Patch后的方法
+    sed -i "$((inBottomCaptionInsetsBlackList_start_line - 1))r $workfile/$android_target_version/inBottomCaptionInsetsBlackList.smali" $MiuiBaseWindowDecorationSmali
+
+    echo '修补沉浸自由窗口小白条完成'
+}
+
 patch_ImmerseFreeformBottomCaption() {
 
     local MiuiBottomDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor -type f -iname "MiuiBottomDecoration.smali")
@@ -122,12 +256,24 @@ patch_ImmerseFreeformBottomCaption() {
     echo '修补沉浸自由窗口小白条完成'
 }
 
+patch_ImmerseFreeformBottomCaptionEntry() {
+  if [ "$android_target_version" -ge 15 ]; then
+    patch_ImmerseFreeformBottomCaption
+  elif [ "$android_target_version" -eq 14 ]; then
+    patch_A14_ImmerseFreeformBottomCaption
+  else
+    echo "❌ Unsupported Android version for immerse freeform bottom caption patch: $android_target_version"
+    exit 1
+  fi
+}
+
+
 
 ### 运行修补
-patch_VerticalSplit
+patch_VerticalSplitEntry
 patch_CvwFull
-patch_DisableFreeformBottomCaption
-patch_ImmerseFreeformBottomCaption
+patch_DisableFreeformBottomCaptionEntry
+patch_ImmerseFreeformBottomCaptionEntry
 
 ### 兼容小米错误的资源数据-@style/null
 sed -i 's/\s*parent="@style\/null"//g' $workfile/MiuiSystemUI/resources/*/res/values/styles.xml
