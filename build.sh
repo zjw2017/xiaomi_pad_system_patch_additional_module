@@ -69,11 +69,6 @@ if [ ! -f "${payload_img_dir}system_ext.img" ]; then
   exit 1
 fi
 
-if [ ! -f "$system_ext_unpak_list_file" ]; then
-  echo "❌ 缺失列表文件: $system_ext_unpak_list_file" >&2
-  exit 1
-fi
-
 echo "📦 解包 system_ext.img..."
 $ExtractErofs -i "${payload_img_dir}system_ext.img" -x -c $workfile/common/system_ext_unpak_list.txt -o "$pre_patch_file_dir"
 
