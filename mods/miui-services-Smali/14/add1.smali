@@ -1,14 +1,17 @@
 
+
 .method public inResizeBlackList(Ljava/lang/String;)Z
-    .locals 2
+    .locals 1
     .param p1, "packageName"    # Ljava/lang/String;
 
-    .line 67
+    .line 852
     iget-object v0, p0, Lcom/android/server/wm/ActivityTaskManagerServiceImpl;->mResizeBlackList:Ljava/util/HashSet;
 
     invoke-virtual {v0, p1}, Ljava/util/HashSet;->contains(Ljava/lang/Object;)Z
 
     move-result v0
+
+### START PATCH ###
 
     invoke-static {}, Lcom/android/server/wm/ActivityTaskManagerServiceImpl;->getDisableResizeBlackListEnabled()Z
 
@@ -20,6 +23,7 @@
     
 :end
 
+### END PATCH ###
+
     return v0
 .end method
-

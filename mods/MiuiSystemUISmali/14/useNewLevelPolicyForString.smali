@@ -1,15 +1,15 @@
 
+
 .method public useNewLevelPolicy(Ljava/lang/String;)Z
     .locals 2
 
     .line 1
-    invoke-static {}, Lcom/android/wm/shell/multitasking/stubs/miuidesktopmode/MiuiDesktopModeStatus;->isActive()Z
+    invoke-static {}, Lcom/android/wm/shell/miuidesktopmode/MiuiDesktopModeStatus;->isActive()Z
 
     .line 2
     move-result v0
 
 ## patch start ##
-
     invoke-static {}, Lcom/android/wm/shell/miuifreeform/infinitymode/MiuiInfinityModeLevelPolicyCompat;->getCvwFullDefaultDesktopEnabled()Z
 
     move-result v1
@@ -18,7 +18,7 @@
 
     const/4 v0, 0x1
     
-:end
+    :end
 
 ## patch end ##
 
@@ -52,4 +52,3 @@
     return p0
     .line 19
 .end method
-

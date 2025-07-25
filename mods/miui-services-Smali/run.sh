@@ -6,8 +6,6 @@ APKTool="java -jar $workfile/../../../common/jar/apktool.jar"
 mkdir -p $workfile/tmp/
 $APKTool d -f -m $workfile/miui-services.jar -o $workfile/miui-services
 
-ls -lh $workfile/../../
-
 ### 去除分屏黑名单
 # 查找原函数位置
 get_Mod1Smali_path() {

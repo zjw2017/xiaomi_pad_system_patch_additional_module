@@ -73,31 +73,62 @@ patch_VerticalSplitEntry() {
   esac
 }
 
+patch_A14_CvwFull() {
+    
+    local MiuiInfinityModeSizeLevelConfigSmali=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/miuifreeform -type f -iname "MiuiInfinityModeSizeLevelConfig.smali")
+    
+    local getLevelTypeForString_start_line=$(grep -n -m 1 ".method private getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
+    # 在getLevelTypeForString_start_line的上一行插入新方法-getCvwFull_Func
+    local insert_getCvwFull_Func_line_to_MiuiInfinityModeSizeLevelConfigSmali=$((getLevelTypeForString_start_line - 1))
+    sed -i "${insert_getCvwFull_Func_line_to_MiuiInfinityModeSizeLevelConfigSmali}r $workfile/getCvwFull_Func.smali" "$MiuiInfinityModeSizeLevelConfigSmali"
+
+    # 重新查找getLevelTypeForString_start_line
+    local getLevelTypeForString_start_line=$(grep -n -m 1 ".method private getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
+    # 从getLevelTypeForString_start_line开始查找第一个.end method行号
+    local getLevelTypeForString_end_line=$(tail -n +"$getLevelTypeForString_start_line" $MiuiInfinityModeSizeLevelConfigSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    # 计算.end method的行号
+    local actual_getLevelTypeForString_end_line=$((getLevelTypeForString_start_line + getLevelTypeForString_end_line - 1))
+    # 删除原方法
+    sed -i "${getLevelTypeForString_start_line},${actual_getLevelTypeForString_end_line}d" $MiuiInfinityModeSizeLevelConfigSmali
+    # 插入Patch后的方法
+    sed -i "$((getLevelTypeForString_start_line - 1))r $workfile/$android_target_version/getLevelTypeForString.smali" $MiuiInfinityModeSizeLevelConfigSmali
+
+    # 重新查找getLevelTypeForComponentName_start_line
+    local getLevelTypeForComponentName_start_line=$(grep -n -m 1 ".method public getLevelType(Landroid/content/ComponentName;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
+    # 从getLevelTypeForComponentName_start_line开始查找第一个.end method行号
+    local getLevelTypeForComponentName_end_line=$(tail -n +"$getLevelTypeForComponentName_start_line" $MiuiInfinityModeSizeLevelConfigSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    # 计算.end method的行号
+    local actual_getLevelTypeForComponentName_end_line=$((getLevelTypeForComponentName_start_line + getLevelTypeForComponentName_end_line - 1))
+    # 删除原方法
+    sed -i "${getLevelTypeForComponentName_start_line},${actual_getLevelTypeForComponentName_end_line}d" $MiuiInfinityModeSizeLevelConfigSmali
+    # 插入Patch后的方法
+    sed -i "$((getLevelTypeForComponentName_start_line - 1))r $workfile/$android_target_version/getLevelTypeForComponentName.smali" $MiuiInfinityModeSizeLevelConfigSmali
+
+    local MiuiInfinityModeLevelPolicyCompatSmali=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/miuifreeform/infinitymode -type f -iname "MiuiInfinityModeLevelPolicyCompat.smali")
+
+    local useNewLevelPolicyForString_start_line=$(grep -n -m 1 ".method public useNewLevelPolicy(Ljava/lang/String;)Z" "$MiuiInfinityModeLevelPolicyCompatSmali" | cut -d: -f1)
+    # 在useNewLevelPolicyForString_start_line的上一行插入新方法-getCvwFull_Func
+    local insert_getCvwFull_Func_line_to_MiuiInfinityModeLevelPolicyCompatSmali=$((useNewLevelPolicyForString_start_line - 1))
+    sed -i "${insert_getCvwFull_Func_line_to_MiuiInfinityModeLevelPolicyCompatSmali}r $workfile/getCvwFull_Func.smali" "$MiuiInfinityModeLevelPolicyCompatSmali"
+
+    # 重新查找useNewLevelPolicyForString_start_line
+    local useNewLevelPolicyForString_start_line=$(grep -n -m 1 ".method public useNewLevelPolicy(Ljava/lang/String;)Z" "$MiuiInfinityModeLevelPolicyCompatSmali" | cut -d: -f1)
+    # 从useNewLevelPolicyForString_start_line开始查找第一个.end method行号
+    local useNewLevelPolicyForString_end_line=$(tail -n +"$useNewLevelPolicyForString_start_line" $MiuiInfinityModeLevelPolicyCompatSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    # 计算.end method的行号
+    local actual_useNewLevelPolicyForString_end_line=$((useNewLevelPolicyForString_start_line + useNewLevelPolicyForString_end_line - 1))
+    # 删除原方法
+    sed -i "${useNewLevelPolicyForString_start_line},${actual_useNewLevelPolicyForString_end_line}d" $MiuiInfinityModeLevelPolicyCompatSmali
+    # 插入Patch后的方法
+    sed -i "$((useNewLevelPolicyForString_start_line - 1))r $workfile/$android_target_version/useNewLevelPolicyForString.smali" $MiuiInfinityModeLevelPolicyCompatSmali
+
+    echo '修补CvwFull完成'
+}
+
 ### 所有应用支持无极小窗
 patch_CvwFull() {
 
-    get_MiuiInfinityModeSizeLevelConfigSmali_path() {
-      local version="$1"
-      local path=""
-
-      if [ "$version" -ge 15 ]; then
-        path=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/multitasking/miuiinfinitymode -type f -iname "MiuiInfinityModeSizeLevelConfig.smali")
-      elif [ "$version" -eq 14 ]; then
-        path=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/miuifreeform -type f -iname "MiuiInfinityModeSizeLevelConfig.smali")
-      else
-        echo "❌ Unsupported Android version for MiuiInfinityModeSizeLevelConfig: $version"
-        exit 1
-      fi
-
-      if [ -z "$path" ]; then
-        echo "❌ MiuiInfinityModeSizeLevelConfig.smali not found"
-        exit 1
-      fi
-
-      echo "$path"
-    }
-
-    local MiuiInfinityModeSizeLevelConfigSmali=$(get_MiuiInfinityModeSizeLevelConfigSmali_path "$android_target_version")
+    local MiuiInfinityModeSizeLevelConfigSmali=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/multitasking/miuiinfinitymode -type f -iname "MiuiInfinityModeSizeLevelConfig.smali")
     
     local getLevelTypeForString_start_line=$(grep -n -m 1 ".method public getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
     # 在getLevelTypeForString_start_line的上一行插入新方法-getCvwFull_Func
@@ -126,29 +157,7 @@ patch_CvwFull() {
     # 插入Patch后的方法
     sed -i "$((getLevelTypeForComponentName_start_line - 1))r $workfile/$android_target_version/getLevelTypeForComponentName.smali" $MiuiInfinityModeSizeLevelConfigSmali
 
-    get_MiuiInfinityModeLevelPolicyCompatSmali_path() {
-      local version="$1"
-      local path=""
-
-      if [ "$version" -ge 15 ]; then
-        path=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/multitasking/miuiinfinitymode -type f -iname "MiuiInfinityModeLevelPolicyCompat.smali")
-      elif [ "$version" -eq 14 ]; then
-        path=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/miuifreeform/infinitymode -type f -iname "MiuiInfinityModeLevelPolicyCompat.smali")
-      else
-        echo "❌ Unsupported Android version for MiuiInfinityModeLevelPolicyCompat: $version"
-        exit 1
-      fi
-
-      if [ -z "$path" ]; then
-        echo "❌ MiuiInfinityModeLevelPolicyCompat.smali not found"
-        exit 1
-      fi
-
-      echo "$path"
-    }
-
-
-    local MiuiInfinityModeLevelPolicyCompatSmali=$(get_MiuiInfinityModeLevelPolicyCompatSmali_path "$android_target_version")
+    local MiuiInfinityModeLevelPolicyCompatSmali=$(find "$workfile/MiuiSystemUI/smali"/*/com/android/wm/shell/multitasking/miuiinfinitymode -type f -iname "MiuiInfinityModeLevelPolicyCompat.smali")
 
     local useNewLevelPolicyForString_start_line=$(grep -n -m 1 ".method public useNewLevelPolicy(Ljava/lang/String;)Z" "$MiuiInfinityModeLevelPolicyCompatSmali" | cut -d: -f1)
     # 在useNewLevelPolicyForString_start_line的上一行插入新方法-getCvwFull_Func
@@ -173,7 +182,7 @@ patch_CvwFull() {
 ### 隐藏自由窗口小白条
 patch_A14_DisableFreeformBottomCaption() {
 
-    local MiuiBaseWindowDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuiwindowdecor -type f -iname "MiuiBaseWindowDecoration.smali")
+    local MiuiBaseWindowDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/miuimultiwinswitch/miuiwindowdecor -type f -iname "MiuiBaseWindowDecoration.smali")
     
     # 查找createBottomCaption_start_line
     local createBottomCaption_start_line=$(grep -n -m 1 ".method private createBottomCaption()Lcom/android/wm/shell/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;" "$MiuiBaseWindowDecorationSmali" | cut -d: -f1)
@@ -222,7 +231,7 @@ patch_DisableFreeformBottomCaptionEntry() {
 ### 沉浸自由窗口小白条
 patch_A14_ImmerseFreeformBottomCaption() {
 
-    local MiuiBaseWindowDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuiwindowdecor -type f -iname "MiuiBaseWindowDecoration.smali")
+    local MiuiBaseWindowDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/miuimultiwinswitch/miuiwindowdecor -type f -iname "MiuiBaseWindowDecoration.smali")
     
     # 查找inBottomCaptionInsetsBlackList_start_line
     local inBottomCaptionInsetsBlackList_start_line=$(grep -n -m 1 ".method private inBottomCaptionInsetsBlackList()Z" "$MiuiBaseWindowDecorationSmali" | cut -d: -f1)

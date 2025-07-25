@@ -1,5 +1,6 @@
 
-.method public getLevelType(Ljava/lang/String;)I
+
+.method private getLevelType(Ljava/lang/String;)I
     .locals 6
 
     .line 7
@@ -13,7 +14,7 @@
 
     if-nez p0, :cond_5
 
-    invoke-static {}, Lcom/android/wm/shell/multitasking/stubs/miuidesktopmode/MiuiDesktopModeStatus;->isActive()Z
+    invoke-static {}, Lcom/android/wm/shell/miuidesktopmode/MiuiDesktopModeStatus;->isActive()Z
 
     move-result p0
 
@@ -169,11 +170,11 @@
     :goto_0
     return v0
 
-    .line 16
     :cond_5
     :goto_1
     const-string p0, "getLevelType packageName is empty or desktop mode unactive."
 
+    .line 16
     invoke-static {v1, p0}, Lcom/android/wm/shell/miuifreeform/MiuiInfinityModeController$Slog;->w(Ljava/lang/String;Ljava/lang/String;)V
 
     return v0

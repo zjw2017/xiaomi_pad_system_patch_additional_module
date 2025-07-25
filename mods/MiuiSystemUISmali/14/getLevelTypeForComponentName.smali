@@ -1,11 +1,12 @@
 
+
 .method public getLevelType(Landroid/content/ComponentName;)I
     .locals 3
 
     if-eqz p1, :cond_2
 
     .line 1
-    invoke-static {}, Lcom/android/wm/shell/multitasking/stubs/miuidesktopmode/MiuiDesktopModeStatus;->isActive()Z
+    invoke-static {}, Lcom/android/wm/shell/miuidesktopmode/MiuiDesktopModeStatus;->isActive()Z
 
     move-result v0
 
@@ -19,7 +20,7 @@
 
     const/4 v0, 0x1
     
-:end
+    :end
 
 ## patch end ##
 
@@ -72,7 +73,7 @@
 
     .line 6
     :cond_1
-    invoke-virtual {p0, v0}, Lcom/android/wm/shell/miuifreeform/MiuiInfinityModeSizeLevelConfig;->getLevelType(Ljava/lang/String;)I
+    invoke-direct {p0, v0}, Lcom/android/wm/shell/miuifreeform/MiuiInfinityModeSizeLevelConfig;->getLevelType(Ljava/lang/String;)I
 
     move-result p0
 
