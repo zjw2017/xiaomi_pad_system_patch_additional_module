@@ -58,13 +58,12 @@ patch_A14_CvwFull() {
       echo "❌ 未找到 MiuiInfinityModeSizeLevelConfig.smali"
       exit 1
     fi
-    local getLevelTypeForString_start_line=$(grep -n -m 1 ".method private getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
+    local getLevelTypeForString_start_line=$(grep -n -m 1 -E ".method (private|public) getLevelType\(Ljava/lang/String;\)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
     # 在getLevelTypeForString_start_line的上一行插入新方法-getCvwFull_Func
     local insert_getCvwFull_Func_line_to_MiuiInfinityModeSizeLevelConfigSmali=$((getLevelTypeForString_start_line - 1))
     sed -i "${insert_getCvwFull_Func_line_to_MiuiInfinityModeSizeLevelConfigSmali}r $workfile/getCvwFull_Func.smali" "$MiuiInfinityModeSizeLevelConfigSmali"
-
     # 重新查找getLevelTypeForString_start_line
-    local getLevelTypeForString_start_line=$(grep -n -m 1 ".method private getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
+    local getLevelTypeForString_start_line=$(grep -n -m 1 -E ".method (private|public) getLevelType\(Ljava/lang/String;\)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
     # 从getLevelTypeForString_start_line开始查找第一个.end method行号
     local getLevelTypeForString_end_line=$(tail -n +"$getLevelTypeForString_start_line" $MiuiInfinityModeSizeLevelConfigSmali | grep -n -m 1 ".end method" | cut -d: -f1)
     # 计算.end method的行号
@@ -72,7 +71,7 @@ patch_A14_CvwFull() {
     # 删除原方法
     sed -i "${getLevelTypeForString_start_line},${actual_getLevelTypeForString_end_line}d" $MiuiInfinityModeSizeLevelConfigSmali
     # 插入Patch后的方法
-    sed -i "$((getLevelTypeForString_start_line - 1))r $workfile/$android_target_version/getLevelTypeForString.smali" $MiuiInfinityModeSizeLevelConfigSmali
+    sed -i "$((getLevelTypeForString_start_line - 1))r $workfile/$android_target_version/getLevelTypeForString.smali" "$MiuiInfinityModeSizeLevelConfigSmali"
 
     # 重新查找getLevelTypeForComponentName_start_line
     local getLevelTypeForComponentName_start_line=$(grep -n -m 1 ".method public getLevelType(Landroid/content/ComponentName;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
