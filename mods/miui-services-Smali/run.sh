@@ -4,7 +4,7 @@ android_target_version="$1"
 workfile=${0%/*}
 APKTool="java -jar $workfile/../../../common/jar/apktool.jar"
 mkdir -p $workfile/tmp/
-$APKTool d -f -m $workfile/miui-services.jar -o $workfile/miui-services
+$APKTool d -f -m $workfile/miui-services.jar -o $workfile/miui-services > /dev/null
 
 ### 去除分屏黑名单
 # 查找原函数位置

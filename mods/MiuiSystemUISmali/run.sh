@@ -3,7 +3,7 @@
 android_target_version="$1"
 workfile=${0%/*}
 APKEditor="java -jar $workfile/../../../common/jar/APKEditor.jar"
-$APKEditor d -f -i $workfile/MiuiSystemUI.apk -o $workfile/MiuiSystemUI
+$APKEditor d -f -i "$workfile/MiuiSystemUI.apk" -o "$workfile/MiuiSystemUI" > /dev/null
 
 
 
