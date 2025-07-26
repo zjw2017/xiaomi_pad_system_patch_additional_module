@@ -60,4 +60,4 @@ sed -i "${start_line_mod2},${actual_end_line_mod2}d" $smali_mod2
 # 插入新方法
 sed -i "$((start_line_mod2 - 1))r $workfile/add3.smali" $smali_mod2
 
-$APKTool b $workfile/miui-services -o $workfile/miui-services_out.jar
+$APKTool b $workfile/miui-services -o $workfile/miui-services_out.jar  > /dev/null

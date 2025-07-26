@@ -305,4 +305,4 @@ patch_ImmerseFreeformBottomCaptionEntry
 sed -i 's/\s*parent="@style\/null"//g' $workfile/MiuiSystemUI/resources/*/res/values/styles.xml
 sed -i 's/\s*parent="@style\/null"//g' $workfile/MiuiSystemUI/resources/*/res/values-night/styles.xml
 
-$APKEditor b -f -i $workfile/MiuiSystemUI -o $workfile/MiuiSystemUI_out.apk
+$APKEditor b -f -i $workfile/MiuiSystemUI -o $workfile/MiuiSystemUI_out.apk > /dev/null
