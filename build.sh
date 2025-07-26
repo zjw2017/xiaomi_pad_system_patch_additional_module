@@ -143,6 +143,12 @@ cp -f "${patch_mods_dir}MiuiSystemUISmali/MiuiSystemUI_out.apk" "${release_dir}s
 echo "📝 更新 module.prop 中的版本号..."
 sed -i "s/^version=.*/version=${input_rom_version}/" "${release_dir}module.prop"
 
+echo "📝 更新 system.prop 移除不兼容的配置"
+if [ "$input_android_target_version" -eq 14 ]; then
+  sed -i '/^ro\.config\.sothx_project_treble_support_vertical_screen_split/d' "${release_dir}system.prop"
+  sed -i '/^ro\.config\.sothx_project_treble_vertical_screen_split_version/d' "${release_dir}system.prop"
+fi
+
 final_zip="${DistDir}${input_rom_version}.zip"
 echo "📦 打包为 Magisk 模块：$final_zip"
 cd "$release_dir"

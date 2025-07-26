@@ -16,12 +16,12 @@ get_Mod1Smali_path() {
   elif [ "$version" -eq 14 ]; then
     path=$(find "$workfile/miui-services/smali/com/android/server/wm/" -type f -iname "ActivityTaskManagerServiceImpl.smali")
   else
-    echo "❌ Unsupported Android version for Mod1: $version"
+    echo "❌ 不支持的 Android 版本: $version"
     exit 1
   fi
 
   if [ -z "$path" ]; then
-    echo "❌ mod1 smali not found"
+    echo "❌ 未找到 mod1 对应的 smali 文件"
     exit 1
   fi
 
@@ -44,6 +44,12 @@ sed -i "$((start_line_mod1 - 1))r $workfile/$android_target_version/add1.smali" 
 
 ### 调整小窗数量
 smali_mod2=$(find $workfile/miui-services/smali/com/android/server/wm/ -type f -iname "MiuiFreeFormStackDisplayStrategy.smali")
+
+if [ -z "$smali_mod2" ]; then
+  echo "❌ 未找到 MiuiFreeFormStackDisplayStrategy.smali"
+  exit 1
+fi
+
 start_line_mod2=$(grep -n -m 1 ".method public getMaxMiuiFreeFormStackCount(Ljava/lang/String;Lcom/android/server/wm/MiuiFreeFormActivityStack;)I" $smali_mod2 | cut -d: -f1)
 # 从.start_line_mod1开始查找第一个.end method行号
 end_line_mod2=$(tail -n +"$start_line_mod2" $smali_mod2 | grep -n -m 1 ".end method" | cut -d: -f1)
