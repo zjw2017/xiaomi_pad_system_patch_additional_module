@@ -46,7 +46,7 @@ jobs:
         run: |
           bash ./build.sh --rom "${{ github.event.inputs.rom }}" \
                           --url "${{ github.event.inputs.url }}" \
-                          --android "${{ github.event.inputs.android }}"
+                          --android "${{ github.event.inputs.android }}" \
                           --fs "${{ github.event.inputs.fs }}"
 
       - name: 📦 上传构建产物
