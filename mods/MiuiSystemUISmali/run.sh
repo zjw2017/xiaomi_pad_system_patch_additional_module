@@ -62,27 +62,33 @@ patch_A14_CvwFull() {
     local getLevelTypeForStringFuncType='private'
 
     local getLevelTypeForString_start_line=$(grep -n -m 1 ".method private getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
-
+    
     if [[ -z "$getLevelTypeForString_start_line" ]]; then
-      local getLevelTypeForStringFuncType='public'
-      local getLevelTypeForString_start_line=$(grep -n -m 1 ".method public getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
+      getLevelTypeForStringFuncType='public'
+      getLevelTypeForString_start_line=$(grep -n -m 1 ".method public getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
     fi
+
+    echo "getLevelTypeForString_start_line=$getLevelTypeForString_start_line"
 
     # 在getLevelTypeForString_start_line的上一行插入新方法-getCvwFull_Func
     local insert_getCvwFull_Func_line_to_MiuiInfinityModeSizeLevelConfigSmali=$((getLevelTypeForString_start_line - 1))
+    echo "insert_getCvwFull_Func_line_to_MiuiInfinityModeSizeLevelConfigSmali=$insert_getCvwFull_Func_line_to_MiuiInfinityModeSizeLevelConfigSmali"
     sed -i "${insert_getCvwFull_Func_line_to_MiuiInfinityModeSizeLevelConfigSmali}r $workfile/getCvwFull_Func.smali" "$MiuiInfinityModeSizeLevelConfigSmali"
+ 
+ 
     # 重新查找getLevelTypeForString_start_line
-    local getLevelTypeForString_start_line=$(grep -n -m 1 ".method private getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
-
+    getLevelTypeForString_start_line=$(grep -n -m 1 ".method private getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
     if [[ -z "$getLevelTypeForString_start_line" ]]; then
-      local getLevelTypeForStringFuncType='public'
-      local getLevelTypeForString_start_line=$(grep -n -m 1 ".method public getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
+      getLevelTypeForStringFuncType='public'
+      getLevelTypeForString_start_line=$(grep -n -m 1 ".method public getLevelType(Ljava/lang/String;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
     fi
+    echo "getLevelTypeForString_start_line=$getLevelTypeForString_start_line"
     
     # 从getLevelTypeForString_start_line开始查找第一个.end method行号
     local getLevelTypeForString_end_line=$(tail -n +"$getLevelTypeForString_start_line" $MiuiInfinityModeSizeLevelConfigSmali | grep -n -m 1 ".end method" | cut -d: -f1)
     # 计算.end method的行号
     local actual_getLevelTypeForString_end_line=$((getLevelTypeForString_start_line + getLevelTypeForString_end_line - 1))
+    echo "actual_getLevelTypeForString_end_line=$actual_getLevelTypeForString_end_line"
     # 删除原方法
     sed -i "${getLevelTypeForString_start_line},${actual_getLevelTypeForString_end_line}d" $MiuiInfinityModeSizeLevelConfigSmali
     # 插入Patch后的方法
@@ -94,14 +100,21 @@ patch_A14_CvwFull() {
 
     # 重新查找getLevelTypeForComponentName_start_line
     local getLevelTypeForComponentName_start_line=$(grep -n -m 1 ".method public getLevelType(Landroid/content/ComponentName;)I" "$MiuiInfinityModeSizeLevelConfigSmali" | cut -d: -f1)
+    echo "getLevelTypeForComponentName_start_line=$getLevelTypeForComponentName_start_line"
     # 从getLevelTypeForComponentName_start_line开始查找第一个.end method行号
     local getLevelTypeForComponentName_end_line=$(tail -n +"$getLevelTypeForComponentName_start_line" $MiuiInfinityModeSizeLevelConfigSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    echo "getLevelTypeForComponentName_end_line=$getLevelTypeForComponentName_end_line"
     # 计算.end method的行号
     local actual_getLevelTypeForComponentName_end_line=$((getLevelTypeForComponentName_start_line + getLevelTypeForComponentName_end_line - 1))
+   echo "actual_getLevelTypeForComponentName_end_line=$actual_getLevelTypeForComponentName_end_line"
     # 删除原方法
     sed -i "${getLevelTypeForComponentName_start_line},${actual_getLevelTypeForComponentName_end_line}d" $MiuiInfinityModeSizeLevelConfigSmali
     # 插入Patch后的方法
-    sed -i "$((getLevelTypeForComponentName_start_line - 1))r $workfile/$android_target_version/getLevelTypeForComponentName.smali" $MiuiInfinityModeSizeLevelConfigSmali
+    if [[ $getLevelTypeForStringFuncType = 'private' ]];then
+    sed -i "$((getLevelTypeForComponentName_start_line - 1))r $workfile/$android_target_version/getLevelTypeForComponentNameByPrivate.smali" $MiuiInfinityModeSizeLevelConfigSmali
+    else
+    sed -i "$((getLevelTypeForComponentName_start_line - 1))r $workfile/$android_target_version/getLevelTypeForComponentNameByPublic.smali" $MiuiInfinityModeSizeLevelConfigSmali
+    fi
 
     local MiuiInfinityModeLevelPolicyCompatSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/miuifreeform/infinitymode -type f -iname "MiuiInfinityModeLevelPolicyCompat.smali")
 
@@ -111,16 +124,22 @@ patch_A14_CvwFull() {
     fi
 
     local useNewLevelPolicyForString_start_line=$(grep -n -m 1 ".method public useNewLevelPolicy(Ljava/lang/String;)Z" "$MiuiInfinityModeLevelPolicyCompatSmali" | cut -d: -f1)
+    echo "useNewLevelPolicyForString_start_line=$useNewLevelPolicyForString_start_line"
+    
     # 在useNewLevelPolicyForString_start_line的上一行插入新方法-getCvwFull_Func
     local insert_getCvwFull_Func_line_to_MiuiInfinityModeLevelPolicyCompatSmali=$((useNewLevelPolicyForString_start_line - 1))
+    echo "insert_getCvwFull_Func_line_to_MiuiInfinityModeLevelPolicyCompatSmali=$insert_getCvwFull_Func_line_to_MiuiInfinityModeLevelPolicyCompatSmali"
     sed -i "${insert_getCvwFull_Func_line_to_MiuiInfinityModeLevelPolicyCompatSmali}r $workfile/getCvwFull_Func.smali" "$MiuiInfinityModeLevelPolicyCompatSmali"
 
     # 重新查找useNewLevelPolicyForString_start_line
-    local useNewLevelPolicyForString_start_line=$(grep -n -m 1 ".method public useNewLevelPolicy(Ljava/lang/String;)Z" "$MiuiInfinityModeLevelPolicyCompatSmali" | cut -d: -f1)
+    useNewLevelPolicyForString_start_line=$(grep -n -m 1 ".method public useNewLevelPolicy(Ljava/lang/String;)Z" "$MiuiInfinityModeLevelPolicyCompatSmali" | cut -d: -f1)
+    echo "useNewLevelPolicyForString_start_line=$useNewLevelPolicyForString_start_line"
     # 从useNewLevelPolicyForString_start_line开始查找第一个.end method行号
     local useNewLevelPolicyForString_end_line=$(tail -n +"$useNewLevelPolicyForString_start_line" $MiuiInfinityModeLevelPolicyCompatSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    echo "useNewLevelPolicyForString_end_line=$useNewLevelPolicyForString_end_line"
     # 计算.end method的行号
     local actual_useNewLevelPolicyForString_end_line=$((useNewLevelPolicyForString_start_line + useNewLevelPolicyForString_end_line - 1))
+    echo "actual_useNewLevelPolicyForString_end_line=$actual_useNewLevelPolicyForString_end_line"
     # 删除原方法
     sed -i "${useNewLevelPolicyForString_start_line},${actual_useNewLevelPolicyForString_end_line}d" $MiuiInfinityModeLevelPolicyCompatSmali
     # 插入Patch后的方法
