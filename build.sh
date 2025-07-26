@@ -88,7 +88,7 @@ if ! command -v payload_dumper >/dev/null 2>&1; then
 fi
 
 echo "⬇️ 获取 system_ext.img..."
-payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
+sudo payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
 
 if [ ! -f "${payload_img_dir}system_ext.img" ]; then
   echo "❌ 找不到 system_ext.img" >&2
