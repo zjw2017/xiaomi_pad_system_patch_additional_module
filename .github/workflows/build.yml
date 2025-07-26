@@ -10,9 +10,21 @@ on:
         description: 'ROM 下载链接'
         required: true
       android:
-        description: '目标 Android 版本 (默认15)'
+        description: '目标 Android 版本'
         required: false
         default: '15'
+        type: choice
+        options:
+          - '15'
+          - '14'
+      fs:
+        description: '镜像解压方式 (米板5系列通常为ext4)'
+        required: false
+        default: 'erofs'
+        type: choice
+        options:
+          - erofs
+          - ext4
 
 jobs:
   build:

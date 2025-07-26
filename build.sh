@@ -6,6 +6,8 @@ set -e
 workfile="$(cd "$(dirname "$0")" && pwd)"
 ExtractErofs="$workfile/common/binary/extract.erofs"
 chmod +x $ExtractErofs
+ImageExtRactorLinux="$workfile/common/binary/imgextractorLinux"
+chmod u+wx "$ImageExtRactorLinux"
 
 # 工作目录和输出目录
 TMPDir="$workfile/tmp/"
@@ -19,6 +21,7 @@ release_dir="${TMPDir}release/"
 input_rom_version=""
 input_rom_url=""
 input_android_target_version="15"  # 默认值
+input_image_fs="erofs"             # 新增：镜像解压方式，默认是 erofs
 
 # 参数解析
 while [[ $# -gt 0 ]]; do
@@ -35,12 +38,17 @@ while [[ $# -gt 0 ]]; do
       input_android_target_version="$2"
       shift 2
       ;;
+    --fs)
+      input_image_fs="$2"
+      shift 2
+      ;;
     *)
       echo "❌ 未知参数: $1"
       exit 1
       ;;
   esac
 done
+
 
 # 检查必须参数
 if [[ -z "$input_rom_version" || -z "$input_rom_url" ]]; then
@@ -60,10 +68,16 @@ case "$input_android_target_version" in
     ;;
 esac
 
+# 检查镜像格式是否合法
+if [[ "$input_image_fs" != "erofs" && "$input_image_fs" != "ext4" ]]; then
+  echo "❌ 镜像解压方式仅支持 erofs 或 ext4，当前为: $input_image_fs"
+  exit 1
+fi
+
 
 echo "🧹 清理并准备临时目录..."
-rm -rf "$TMPDir"
-mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
+sudo rm -rf "$TMPDir"
+sudo mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
 
 echo "🔍 检查 payload_dumper 是否可用..."
 if ! command -v payload_dumper >/dev/null 2>&1; then
@@ -81,8 +95,21 @@ if [ ! -f "${payload_img_dir}system_ext.img" ]; then
   exit 1
 fi
 
-echo "📦 解包 system_ext.img..."
-$ExtractErofs -i "${payload_img_dir}system_ext.img" -x -c $workfile/common/system_ext_unpak_list.txt -o "$pre_patch_file_dir"
+# 根据镜像格式选择工具
+if [[ "$input_image_fs" == "erofs" ]]; then
+  echo "📦 使用 extract.erofs 解包 system_ext.img..."
+  "$ExtractErofs" \
+    -i "${payload_img_dir}system_ext.img" \
+    -x -c "$workfile/common/system_ext_unpak_list.txt" \
+    -o "$pre_patch_file_dir"
+
+elif [[ "$input_image_fs" == "ext4" ]]; then
+  echo "📦 使用 imgextractorLinux 解包 system_ext.img..."
+  sudo "$ImageExtRactorLinux" "${payload_img_dir}system_ext.img" "$pre_patch_file_dir"
+else
+  echo "❌ 不支持的镜像解压方式: $input_image_fs"
+  exit 1
+fi
 
 # 检查提取文件
 system_ext_unpak_list_file="$workfile/common/system_ext_unpak_list.txt"
