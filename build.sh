@@ -77,7 +77,7 @@ fi
 
 echo "🧹 清理并准备临时目录..."
 sudo rm -rf "$TMPDir"
-sudo mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
+mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
 
 echo "🔍 检查 payload_dumper 是否可用..."
 if ! command -v payload_dumper >/dev/null 2>&1; then
@@ -88,7 +88,7 @@ if ! command -v payload_dumper >/dev/null 2>&1; then
 fi
 
 echo "⬇️ 获取 system_ext.img..."
-sudo payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
+payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
 
 if [ ! -f "${payload_img_dir}system_ext.img" ]; then
   echo "❌ 找不到 system_ext.img" >&2
