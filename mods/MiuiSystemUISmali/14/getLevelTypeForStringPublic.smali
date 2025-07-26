@@ -1,6 +1,6 @@
 
 
-.method private getLevelType(Ljava/lang/String;)I
+.method public getLevelType(Ljava/lang/String;)I
     .locals 6
 
     .line 7
