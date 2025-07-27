@@ -131,4 +131,4 @@ A：请在安装本模块前务必准备 **救砖方案**（如：启用 zrecove
 - 基于 payload-dumper 提取官方 ROM
 - Bash 自动生成模块结构
 - 支持 `ext4` 和 `erofs` 文件系统格式
-- Android 14 和
+- Android 14 和 Android 15 均已适配
