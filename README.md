@@ -106,7 +106,7 @@
 A：请访问 [https://hyperos.fans/](https://hyperos.fans/) 搜索对应设备版本。
 
 **Q：适用于哪些设备？**  
-A：推荐用于小米平板系列（如小米平板 5 / 6 / 6 Pro），需已解锁 Bootloader 并安装 Magisk。
+A：推荐用于小米平板系列，需已解锁 Bootloader 并安装 Magisk。
 
 **Q：构建失败怎么办？**  
 A：请检查 ROM 链接是否有效，或提交 Issue 获取帮助。
