@@ -149,7 +149,7 @@ A：请在安装本模块前务必准备 **救砖方案**（如：启用 zrecove
 
 ```bash
 # 添加上游仓库（只需执行一次）
-git remote add upstream https://github.com/原项目作者/原项目名.git
+git remote add upstream https://github.com/sothx/xiaomi_pad_system_patch_additional_module.git
 
 # 获取上游更新并合并
 git fetch upstream
