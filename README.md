@@ -174,7 +174,7 @@ git push origin main
 product/etc/dot_black_list.json 0 0 0644
 ```
 
-- **在 `/config/product_fs_config` 中追加：**
+- **在 `/config/product_file_contexts` 中追加：**
 
 ```bash
 /product/etc/dot_black_list\.json u:object_r:system_file:s0
