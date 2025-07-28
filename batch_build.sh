@@ -39,7 +39,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 
   # 执行构建命令（保持原始参数不变）
   chmod +x build.sh
-  eval "./build.sh $line" | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"
+  eval "./build.sh $line"
 
   # 构建完后移动输出（使用去除引号后的名称）
   output_file="$workfile/dist/${rom_version}.zip"
