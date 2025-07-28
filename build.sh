@@ -90,7 +90,7 @@ if [[ "$is_batch_mode" == true ]]; then
     fi
 
     # ⚠️ 移除 device 参数（防止传递到构建脚本）
-    clean_line=$(echo "$line" | sed -E 's/--device(=|\s+)([^"'\'' ]+|"[^"]*"|'\''[^'\'']*'\'')//g')
+    clean_line=$(echo "$line" | sed -E 's/[[:space:]]*--device(=|[[:space:]]+)([^"'\'' ]+|"[^"]*"|'\''[^'\'']*'\'')//g')
 
     echo "🚀 开始处理: $clean_line"
     bash "$0" $clean_line
