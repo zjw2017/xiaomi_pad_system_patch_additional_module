@@ -26,5 +26,5 @@ jobs:
       - name: 📦 上传所有构建产物
         uses: actions/upload-artifact@v4
         with:
-          name: 批量构建产物
-          path: batch_dist/
+            name: batch-build-artifacts-${{ github.run_id }}-$(date +%Y-%m-%d-%H-%M)
+            path: batch_dist/
