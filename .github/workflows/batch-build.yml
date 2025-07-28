@@ -1,0 +1,30 @@
+name: 批量构建 Magisk 模块
+
+on:
+  workflow_dispatch:
+
+jobs:
+  batch-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 克隆仓库
+        uses: actions/checkout@v3
+
+      - name: 🛠 安装依赖
+        run: |
+          sudo apt update
+          sudo apt install -y zip unzip python3-pip
+          pip install --user pipx
+          pipx ensurepath
+          pipx install git+https://github.com/5ec1cff/payload-dumper
+
+      - name: 🚀 执行批量构建
+        run: |
+          bash ./build.sh --batch
+
+      - name: 📦 上传所有构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: 批量构建产物
+          path: batch_dist/

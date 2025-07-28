@@ -16,12 +16,56 @@ payload_img_dir="${TMPDir}payload_img/"
 pre_patch_file_dir="${TMPDir}pre_patch_file/"
 patch_mods_dir="${TMPDir}patch_mods/"
 release_dir="${TMPDir}release/"
+batch_config_file="$workfile/batch_rom_list.txt"
+batch_output_dir="$workfile/batch_dist"
 
 # 参数初始化
 input_rom_version=""
 input_rom_url=""
 input_android_target_version="15"  # 默认值
 input_image_fs="erofs"             # 新增：镜像解压方式，默认是 erofs
+
+# 处理批量模式
+if [[ "$1" == "--batch" ]]; then
+
+  echo "🧹 清理旧的 batch 输出目录: $batch_output_dir"
+  sudo rm -rf "$batch_output_dir"
+  mkdir -p "$batch_output_dir"
+
+  if [[ ! -f "$batch_config_file" ]]; then
+    echo "❌ 批量构建配置文件不存在: $batch_config_file" >&2
+    exit 1
+  fi
+
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ -z "$line" || "$line" == \#* ]] && continue
+
+    echo "🚀 开始处理: $line"
+    bash "$0" $line
+
+    rom_version=$(echo "$line" | grep -oP '(?<=--rom\s)[^ ]+')
+    device_name=$(echo "$line" | grep -oP '(?<=--device\s)[^ ]+')
+
+    if [[ -z "$device_name" ]]; then
+      echo "❌ 错误：批量构建中的这一行缺少 --device 参数：" >&2
+      echo "   $line" >&2
+      echo "请为每个 ROM 配置添加 --device <设备名>" >&2
+      exit 1
+    fi
+
+    if [[ -f "$DistDir${rom_version}.zip" ]]; then
+      mkdir -p "$batch_output_dir/$device_name"
+      mv "$DistDir${rom_version}.zip" "$batch_output_dir/$device_name/${rom_version}.zip"
+      echo "📁 构建结果已移动到: $batch_output_dir/$device_name/${rom_version}.zip"
+    else
+      echo "⚠️ 未找到输出文件: $DistDir${rom_version}.zip"
+    fi
+  done < "$batch_config_file"
+
+  echo "✅ 批量构建完成"
+  exit 0
+fi
+
 
 # 参数解析
 while [[ $# -gt 0 ]]; do
@@ -48,6 +92,36 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+
+# 批量模式
+if [[ "$1" == "--batch" ]]; then
+  if [[ ! -f "$batch_config_file" ]]; then
+    echo "❌ 批量构建配置文件不存在: $batch_config_file" >&2
+    exit 1
+  fi
+
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    # 跳过空行或注释
+    [[ -z "$line" || "$line" == \#* ]] && continue
+
+    echo "🚀 开始处理: $line"
+    bash "$0" $line
+
+    # 提取 ROM 版本号用于文件夹命名
+    rom_version=$(echo "$line" | grep -oP '(?<=--rom\s)[^ ]+')
+    if [[ -f "$DistDir${rom_version}.zip" ]]; then
+      mkdir -p "$batch_output_dir/$rom_version"
+      mv "$DistDir${rom_version}.zip" "$batch_output_dir/$rom_version/${rom_version}.zip"
+      echo "📁 构建结果已移动到: $batch_output_dir/$rom_version/"
+    else
+      echo "⚠️ 未找到预期的输出文件: $DistDir${rom_version}.zip"
+    fi
+  done < "$batch_config_file"
+
+  echo "✅ 批量构建完成"
+  exit 0
+fi
 
 
 # 检查必须参数
