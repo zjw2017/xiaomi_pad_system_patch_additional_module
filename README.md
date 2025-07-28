@@ -142,8 +142,10 @@ A：请在安装本模块前务必准备 **救砖方案**（如：启用 zrecove
 ### ✅ 方法一：GitHub 网页操作（适合不熟悉 Git 的用户）
 
 1. 打开你的 Fork 仓库页面；
-2. 点击上方 `Fetch upstream` 按钮；
-3. 点击 `Fetch and merge`，即可同步主项目的更新。
+2. 点击右上方 `Sync fork` 按钮；
+3. 点击 `Update branch`，即可同步主项目的更新。
+
+![Fork 仓库同步主仓库更新](https://github.com/user-attachments/assets/4f5c5b4c-5ff7-4f22-a237-166b4f2aac56)
 
 ### 🧑‍💻 方法二：命令行同步（适合开发者）
 
