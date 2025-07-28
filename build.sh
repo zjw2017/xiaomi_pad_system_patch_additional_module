@@ -42,6 +42,9 @@ while [[ $# -gt 0 ]]; do
       input_image_fs="$2"
       shift 2
       ;;
+    --device)
+      shift 2
+      ;;
     *)
       echo "❌ 未知参数: $1"
       exit 1

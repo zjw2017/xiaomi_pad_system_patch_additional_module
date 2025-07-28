@@ -14,35 +14,40 @@ if [[ ! -f "$batch_config_file" ]]; then
   exit 1
 fi
 
+# 去除引号的函数
+strip_quotes() {
+  echo "$1" | sed -e 's/^"//' -e 's/"$//'
+}
+
 while IFS= read -r line || [[ -n "$line" ]]; do
   [[ -z "$line" || "$line" == \#* ]] && continue
 
-  # 取出device和rom版本
-  device_name=$(echo "$line" | grep -oP '(?<=--device\s)[^ ]+')
-  rom_version=$(echo "$line" | grep -oP '(?<=--rom\s)[^ ]+')
+  echo "🚀 开始构建: $line"
+
+  # 提取device和rom版本（去除引号）
+  device_name=$(echo "$line" | grep -oP -- '--device\s+"\K[^"]+' || echo "$line" | grep -oP -- '--device\s+\K[^ ]+')
+  rom_version=$(echo "$line" | grep -oP -- '--rom\s+"\K[^"]+' || echo "$line" | grep -oP -- '--rom\s+\K[^ ]+')
+  
+  # 去除可能存在的引号
+  device_name=$(strip_quotes "$device_name")
+  rom_version=$(strip_quotes "$rom_version")
 
   if [[ -z "$device_name" || -z "$rom_version" ]]; then
     echo "❌ 配置行缺少 --device 或 --rom 参数: $line"
     exit 1
   fi
 
-  echo "🚀 开始构建: $line"
+  # 执行构建命令（保持原始参数不变）
+  eval "./build.sh $line" | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"
 
-# 去除 --device 参数及其值（支持格式：--device xyz 或 --device=xyz）
-  clean_line=$(echo "$line" | sed -E 's/[[:space:]]*--device(=|[[:space:]]+)([^ ]+)//g')
-
-  # 直接调用 build.sh，参数全部传递过去
-  # 注意要正确处理参数带引号的情况，下面简单示例假设参数无空格
-  # 如果参数有空格需要用更复杂的解析逻辑
-  eval "./build.sh $clean_line"
-
-  # 构建完后移动输出
-  if [[ -f "$workfile/dist/${rom_version}.zip" ]]; then
+  # 构建完后移动输出（使用去除引号后的名称）
+  output_file="$workfile/dist/${rom_version}.zip"
+  if [[ -f "$output_file" ]]; then
     mkdir -p "$batch_output_dir/$device_name"
-    mv "$workfile/dist/${rom_version}.zip" "$batch_output_dir/$device_name/${rom_version}.zip"
+    mv "$output_file" "$batch_output_dir/$device_name/${rom_version}.zip"
     echo "📁 构建结果已移动到: $batch_output_dir/$device_name/${rom_version}.zip"
   else
-    echo "⚠️ 未找到输出文件: $workfile/dist/${rom_version}.zip"
+    echo "⚠️ 未找到输出文件: $output_file"
   fi
 done < "$batch_config_file"
 
