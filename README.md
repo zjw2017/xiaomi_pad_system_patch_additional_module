@@ -162,11 +162,11 @@ git push origin main
 
 ## 🔧 移植包适配说明（供移植包作者参考）
 
-如果你是 **第三方 ROM / 移植包作者**，为了保证模块在你的 ROM 中功能完整且不被 SELinux 拒绝，请确保以下几点：
+如果你是 **第三方 ROM / 移植包作者**，为了保证模块相关功能在你的 ROM 中移植完整且不被 SELinux 拒绝，请确保以下几点：
 
 ### 1️⃣ 正确配置 `/product/etc/dot_black_list.json` 权限
 
-为了避免 SELinux 拒绝模块操作该文件，必须补充以下权限项：
+为了避免 SELinux 拒绝操作该文件，必须补充以下权限项：
 
 - **在 `/config/product_fs_config` 中追加：**
 
