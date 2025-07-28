@@ -134,7 +134,9 @@ case "$input_android_target_version" in
 esac
 
 # 镜像格式验证
-if [[ "$input_image_fs" != "erofs" && "$input_image_fs" != "ext4" ]]; then
+# 变量去空格
+input_image_fs_trimmed="$(echo "$input_image_fs" | tr -d ' \t\r\n')"
+if [[ "$input_image_fs_trimmed" != "erofs" && "$input_image_fs_trimmed" != "ext4" ]]; then
   echo "❌ 镜像解压方式仅支持 erofs 或 ext4，当前为: $input_image_fs"
   exit 1
 fi
