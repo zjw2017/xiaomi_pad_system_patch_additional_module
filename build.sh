@@ -77,42 +77,40 @@ if [[ "$is_batch_mode" == true ]]; then
     exit 1
   fi
 
-  while IFS= read -r line || [[ -n "$line" ]]; do
-    [[ -z "$line" || "$line" == \#* ]] && continue
+while IFS= read -r line || [[ -n "$line" ]]; do
+  [[ -z "$line" || "$line" == \#* ]] && continue
 
-    rom_version=$(echo "$line" | grep -oP '(?<=--rom\s)[^ ]+')
-    device_name=$(echo "$line" | grep -oP '(?<=--device\s)[^ ]+')
+  rom_version=$(echo "$line" | grep -oP '(?<=--rom\s)[^ ]+')
+  device_name=$(echo "$line" | grep -oP '(?<=--device\s)[^ ]+')
 
-    if [[ -z "$device_name" ]]; then
-      echo "❌ 错误：该行缺少 --device 参数：" >&2
-      echo "   $line" >&2
-      exit 1
-    fi
+  if [[ -z "$device_name" ]]; then
+    echo "❌ 错误：该行缺少 --device 参数：" >&2
+    echo "   $line" >&2
+    exit 1
+  fi
 
-    # ⚠️ 移除 device 参数（防止传递到构建脚本）
-    clean_line=$(echo "$line" | sed -E 's/[[:space:]]*--device(=|[[:space:]]+)([^"'\'' ]+|"[^"]*"|'\''[^'\'']*'\'')//g')
+  # 移除 device 参数，防止传递给子进程
+  clean_line=$(echo "$line" | sed -E 's/[[:space:]]*--device(=|[[:space:]]+)([^"'\'' ]+|"[^"]*"|'\''[^'\'']*'\'')//g')
 
-    echo "🚀 开始处理: $line"
+  echo "🚀 开始处理: $line"
+  echo "DEBUG: 原始参数行：$line"
+  echo "DEBUG: 清理 device 后参数：$clean_line"
 
-    # 打印解析参数前
-    echo "DEBUG: 原始参数行：$line"
+  # 使用 eval 解析带引号的参数，转为数组
+  eval "args=($clean_line)"
 
-    # 清理 device 参数后
-    clean_line=$(echo "$line" | sed -E 's/\s*--device(=|\s+)([^"'\'' ]+|"[^"]*"|'\''[^'\'']*'\'')//g')
-    echo "DEBUG: 清理 device 后参数：$clean_line"
+  # 用数组调用自己，确保参数正确
+  # shellcheck disable=SC2154
+  bash "$0" "${args[@]}"
 
-    # 调用自己时用数组避免空格拆分
-    read -r -a params <<< "$clean_line"
-    bash "$0" "${params[@]}"
-
-    if [[ -f "$DistDir${rom_version}.zip" ]]; then
-      mkdir -p "$batch_output_dir/$device_name"
-      mv "$DistDir${rom_version}.zip" "$batch_output_dir/$device_name/${rom_version}.zip"
-      echo "📁 构建结果已移动到: $batch_output_dir/$device_name/${rom_version}.zip"
-    else
-      echo "⚠️ 未找到输出文件: $DistDir${rom_version}.zip"
-    fi
-  done < "$batch_config_file"
+  if [[ -f "$DistDir${rom_version}.zip" ]]; then
+    mkdir -p "$batch_output_dir/$device_name"
+    mv "$DistDir${rom_version}.zip" "$batch_output_dir/$device_name/${rom_version}.zip"
+    echo "📁 构建结果已移动到: $batch_output_dir/$device_name/${rom_version}.zip"
+  else
+    echo "⚠️ 未找到输出文件: $DistDir${rom_version}.zip"
+  fi
+done < "$batch_config_file"
 
   echo "✅ 批量构建完成"
   exit 0
