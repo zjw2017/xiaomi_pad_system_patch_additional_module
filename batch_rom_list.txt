@@ -19,6 +19,6 @@
 # 小米平板5 Pro 12.4
 --rom "OS2.0.10.0.ULZCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.10.0.ULZCNXM/dagu-ota_full-OS2.0.10.0.ULZCNXM-user-14.0-041e9e8347.zip" --android 14 --fs ext4 --device "Xiaomi Pad 5 Pro 12.4"
 # 红米平板
---rom "OS1.0.8.0.ULYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.8.0.ULYCNXM/miui_YUNLUO_OS1.0.8.0.ULYCNXM_0f98c0db8c_14.0.zip" --android 14 --fs ext4 --device "Redmi Pad"
+--rom "OS1.0.8.0.ULYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.8.0.ULYCNXM/miui_YUNLUO_OS1.0.8.0.ULYCNXM_0f98c0db8c_14.0.zip" --android 14 --fs erofs --device "Redmi Pad"
 # 红米平板 SE
 --rom "OS2.0.203.0.VMUCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.203.0.VMUCNXM/xun-ota_full-OS2.0.203.0.VMUCNXM-user-15.0-b9461f3dd1.zip" --android 15 --fs erofs --device "Redmi Pad SE"
