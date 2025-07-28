@@ -92,7 +92,16 @@ if [[ "$is_batch_mode" == true ]]; then
     # ⚠️ 移除 device 参数（防止传递到构建脚本）
     clean_line=$(echo "$line" | sed -E 's/[[:space:]]*--device(=|[[:space:]]+)([^"'\'' ]+|"[^"]*"|'\''[^'\'']*'\'')//g')
 
-    echo "🚀 开始处理: $clean_line"
+    echo "🚀 开始处理: $line"
+
+    # 打印解析参数前
+    echo "DEBUG: 原始参数行：$line"
+
+    # 清理 device 参数后
+    clean_line=$(echo "$line" | sed -E 's/\s*--device(=|\s+)([^"'\'' ]+|"[^"]*"|'\''[^'\'']*'\'')//g')
+    echo "DEBUG: 清理 device 后参数：$clean_line"
+
+    # 传递参数调用自己
     bash "$0" $clean_line
 
     if [[ -f "$DistDir${rom_version}.zip" ]]; then
