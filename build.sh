@@ -160,7 +160,7 @@ if [ ! -f "${payload_img_dir}system_ext.img" ]; then
 fi
 
 # 解包
-if [[ "$input_image_fs" == "erofs" ]]; then
+if [[ "$input_image_fs_trimmed" == "erofs" ]]; then
   "$ExtractErofs" -i "${payload_img_dir}system_ext.img" -x -c "$workfile/common/system_ext_unpak_list.txt" -o "$pre_patch_file_dir"
 else
   sudo "$ImageExtRactorLinux" "${payload_img_dir}system_ext.img" "$pre_patch_file_dir"
