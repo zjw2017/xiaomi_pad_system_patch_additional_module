@@ -101,8 +101,9 @@ if [[ "$is_batch_mode" == true ]]; then
     clean_line=$(echo "$line" | sed -E 's/\s*--device(=|\s+)([^"'\'' ]+|"[^"]*"|'\''[^'\'']*'\'')//g')
     echo "DEBUG: 清理 device 后参数：$clean_line"
 
-    # 传递参数调用自己
-    bash "$0" $clean_line
+    # 调用自己时用数组避免空格拆分
+    read -r -a params <<< "$clean_line"
+    bash "$0" "${params[@]}"
 
     if [[ -f "$DistDir${rom_version}.zip" ]]; then
       mkdir -p "$batch_output_dir/$device_name"
