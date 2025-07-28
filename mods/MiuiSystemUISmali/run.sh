@@ -3,7 +3,7 @@
 android_target_version="$1"
 workfile=${0%/*}
 APKEditor="java -jar $workfile/../../../common/jar/APKEditor.jar"
-$APKEditor d -f -i "$workfile/MiuiSystemUI.apk" -o "$workfile/MiuiSystemUI" > /dev/null
+$APKEditor d -f -i "$workfile/MiuiSystemUI.apk" -o "$workfile/MiuiSystemUI" > /dev/null 2>&1
 
 
 
@@ -399,4 +399,4 @@ patch_CustomDotBlackListEntry
 sed -i 's/\s*parent="@style\/null"//g' $workfile/MiuiSystemUI/resources/*/res/values/styles.xml
 sed -i 's/\s*parent="@style\/null"//g' $workfile/MiuiSystemUI/resources/*/res/values-night/styles.xml
 
-$APKEditor b -f -i $workfile/MiuiSystemUI -o $workfile/MiuiSystemUI_out.apk > /dev/null
+$APKEditor b -f -i $workfile/MiuiSystemUI -o $workfile/MiuiSystemUI_out.apk > /dev/null 2>&1
