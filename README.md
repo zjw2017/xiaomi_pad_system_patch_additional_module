@@ -184,7 +184,7 @@ product/etc/dot_black_list.json 0 0 0644
 
 ### 2️⃣ 所有 system.prop 属性应写入 `/product/etc/build.prop` 权限
 
-为确保属性生效，请将所有 `ro.config.xxx` 自定义属性写入：
+为确保属性生效，请将所有模块在 `system.prop` 定义的属性写入：
 
 ```bash
 /product/etc/build.prop
