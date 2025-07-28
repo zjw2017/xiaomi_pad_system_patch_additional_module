@@ -331,6 +331,28 @@ patch_ImmerseFreeformBottomCaptionEntry() {
   fi
 }
 
+### 自定义窗口控制器黑名单(A14)
+patch_A14_CustomDotBlackList() {
+
+    local MiuiMultiWinSwitchConfigSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/miuimultiwinswitch -type f -iname "MiuiMultiWinSwitchConfig.smali")
+    
+    # 查找getDotBlackList_start_line
+    local getDotBlackList_start_line=$(grep -n -m 1 ".method public getDotBlackList()Ljava/util/Set;" "$MiuiMultiWinSwitchConfigSmali" | cut -d: -f1)
+    echo "getDotBlackList_start_line=$getDotBlackList_start_line"
+    # 从createBottomCaption_start_line开始查找第一个.end method行号
+    local getDotBlackList_end_line=$(tail -n +"$getDotBlackList_start_line" $MiuiMultiWinSwitchConfigSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    echo "getDotBlackList_end_line=$getDotBlackList_end_line"
+    # 计算.end method的行号
+    local actual_getDotBlackList_end_line=$((getDotBlackList_start_line + getDotBlackList_end_line - 1))
+    echo "actual_getDotBlackList_end_line=$actual_getDotBlackList_end_line"
+    # 删除原方法
+    sed -i "${getDotBlackList_start_line},${actual_getDotBlackList_end_line}d" $MiuiMultiWinSwitchConfigSmali
+    # 插入Patch后的方法
+    sed -i "$((getDotBlackList_start_line - 1))r $workfile/$android_target_version/customDotBlackList.smali" $MiuiMultiWinSwitchConfigSmali
+
+    echo '修补自定义窗口控制器黑名单完成'
+}
+
 ### 自定义窗口控制器黑名单
 patch_CustomDotBlackList() {
 
@@ -357,7 +379,7 @@ patch_CustomDotBlackListEntry() {
   if [ "$android_target_version" -ge 15 ]; then
     patch_CustomDotBlackList
   elif [ "$android_target_version" -eq 14 ]; then
-    echo "⚠️ Android 14 未适配 custom dot black list，跳过"
+    patch_A14_CustomDotBlackList
   else
     echo "❌ Unsupported Android version for custom dot black list patch: $android_target_version"
     exit 1
