@@ -89,8 +89,11 @@ if [[ "$is_batch_mode" == true ]]; then
       exit 1
     fi
 
-    echo "🚀 开始处理: $line"
-    bash "$0" $line
+    # ⚠️ 移除 device 参数（防止传递到构建脚本）
+    clean_line=$(echo "$line" | sed -E 's/--device\s+[^ ]+//g')
+
+    echo "🚀 开始处理: $clean_line"
+    bash "$0" $clean_line
 
     if [[ -f "$DistDir${rom_version}.zip" ]]; then
       mkdir -p "$batch_output_dir/$device_name"
