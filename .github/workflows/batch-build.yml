@@ -21,7 +21,7 @@ jobs:
 
       - name: 🚀 执行批量构建
         run: |
-          bash ./build.sh --batch
+          bash ./batch_build.sh
 
       - name: 📦 上传所有构建产物
         uses: actions/upload-artifact@v4
