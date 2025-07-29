@@ -49,26 +49,5 @@
     .line 1
     new-instance v0, Lcom/android/wm/shell/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;
 
-    .line 2
-    iget-object p0, p0, Lcom/android/wm/shell/miuimultiwinswitch/miuiwindowdecor/MiuiBaseWindowDecoration;->mContext:Landroid/content/Context;
 
-    .line 4
-    invoke-direct {v0, p0}, Lcom/android/wm/shell/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;-><init>(Landroid/content/Context;)V
-
-    .line 6
-    new-instance p0, Landroid/view/ViewGroup$LayoutParams;
-
-    .line 9
-    const/4 v1, -0x1
-
-    .line 11
-    invoke-direct {p0, v1, v1}, Landroid/view/ViewGroup$LayoutParams;-><init>(II)V
-
-    .line 12
-    invoke-virtual {v0, p0}, Landroid/view/View;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
-
-    .line 15
-    return-object v0
-    .line 18
-.end method
 

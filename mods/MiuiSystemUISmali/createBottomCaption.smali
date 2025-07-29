@@ -49,47 +49,5 @@
     .line 1
     new-instance v0, Lcom/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;
 
-    .line 2
-    iget-object v1, p0, Lcom/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor/MiuiBaseWindowDecoration;->mContext:Landroid/content/Context;
 
-    .line 4
-    invoke-direct {v0, v1}, Lcom/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;-><init>(Landroid/content/Context;)V
-
-    .line 6
-    new-instance v1, Landroid/view/ViewGroup$LayoutParams;
-
-    .line 9
-    const/4 v2, -0x1
-
-    .line 11
-    invoke-direct {v1, v2, v2}, Landroid/view/ViewGroup$LayoutParams;-><init>(II)V
-
-    .line 12
-    invoke-virtual {v0, v1}, Landroid/view/View;->setLayoutParams(Landroid/view/ViewGroup$LayoutParams;)V
-
-    .line 15
-    iget-object p0, p0, Lcom/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor/MiuiBaseWindowDecoration;->mContext:Landroid/content/Context;
-
-    .line 18
-    invoke-virtual {p0}, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
-
-    .line 20
-    move-result-object p0
-
-    .line 23
-    const v1, 0x7f13097d    # @string/multiwin_bottomcaption 'Floating window action bar'
-
-    .line 24
-    invoke-virtual {p0, v1}, Landroid/content/res/Resources;->getString(I)Ljava/lang/String;
-
-    .line 27
-    move-result-object p0
-
-    .line 30
-    invoke-virtual {v0, p0}, Landroid/view/View;->setContentDescription(Ljava/lang/CharSequence;)V
-
-    .line 31
-    return-object v0
-    .line 34
-.end method
 

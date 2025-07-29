@@ -235,7 +235,7 @@ patch_A14_DisableFreeformBottomCaption() {
     local createBottomCaption_start_line=$(grep -n -m 1 ".method private createBottomCaption()Lcom/android/wm/shell/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;" "$MiuiBaseWindowDecorationSmali" | cut -d: -f1)
     echo "createBottomCaption_start_line=$createBottomCaption_start_line"
     # 从createBottomCaption_start_line开始查找第一个.end method行号
-    local createBottomCaption_end_line=$(tail -n +"$createBottomCaption_start_line" $MiuiBaseWindowDecorationSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    local createBottomCaption_end_line=$(tail -n +"$createBottomCaption_start_line" $MiuiBaseWindowDecorationSmali | grep -n -m 1 "new-instance v0, Lcom/android/wm/shell/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;" | cut -d: -f1)
     echo "createBottomCaption_end_line=$createBottomCaption_end_line"
     # 计算.end method的行号
     local actual_createBottomCaption_end_line=$((createBottomCaption_start_line + createBottomCaption_end_line - 1))
@@ -259,7 +259,7 @@ patch_DisableFreeformBottomCaption() {
     local createBottomCaption_start_line=$(grep -n -m 1 ".method private createBottomCaption()Lcom/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;" "$MiuiBottomDecorationSmali" | cut -d: -f1)
     echo "createBottomCaption_start_line=$createBottomCaption_start_line"
     # 从createBottomCaption_start_line开始查找第一个.end method行号
-    local createBottomCaption_end_line=$(tail -n +"$createBottomCaption_start_line" $MiuiBottomDecorationSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    local createBottomCaption_end_line=$(tail -n +"$createBottomCaption_start_line" $MiuiBottomDecorationSmali | grep -n -m 1 "new-instance v0, Lcom/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;" | cut -d: -f1)
     echo "createBottomCaption_end_line=$createBottomCaption_end_line"
     # 计算.end method的行号
     local actual_createBottomCaption_end_line=$((createBottomCaption_start_line + createBottomCaption_end_line - 1))
