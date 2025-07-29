@@ -227,13 +227,19 @@ patch_CvwFullEntry() {
 patch_A14_DisableFreeformBottomCaption() {
 
     local MiuiBaseWindowDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/miuimultiwinswitch/miuiwindowdecor -type f -iname "MiuiBaseWindowDecoration.smali")
-    
+    if [ -z "$MiuiBaseWindowDecorationSmali" ]; then
+      echo "❌ 未找到 MiuiBaseWindowDecoration.smali"
+      exit 1
+    fi
     # 查找createBottomCaption_start_line
     local createBottomCaption_start_line=$(grep -n -m 1 ".method private createBottomCaption()Lcom/android/wm/shell/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;" "$MiuiBaseWindowDecorationSmali" | cut -d: -f1)
+    echo "createBottomCaption_start_line=$createBottomCaption_start_line"
     # 从createBottomCaption_start_line开始查找第一个.end method行号
     local createBottomCaption_end_line=$(tail -n +"$createBottomCaption_start_line" $MiuiBaseWindowDecorationSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    echo "createBottomCaption_end_line=$createBottomCaption_end_line"
     # 计算.end method的行号
     local actual_createBottomCaption_end_line=$((createBottomCaption_start_line + createBottomCaption_end_line - 1))
+    echo "createBottomCaption_end_line=$createBottomCaption_end_line"
     # 删除原方法
     sed -i "${createBottomCaption_start_line},${actual_createBottomCaption_end_line}d" $MiuiBaseWindowDecorationSmali
     # 插入Patch后的方法
@@ -245,13 +251,19 @@ patch_A14_DisableFreeformBottomCaption() {
 patch_DisableFreeformBottomCaption() {
 
     local MiuiBottomDecorationSmali=$(find $workfile/MiuiSystemUI/smali/*/com/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor -type f -iname "MiuiBottomDecoration.smali")
-    
+    if [ -z "$MiuiBottomDecorationSmali" ]; then
+      echo "❌ 未找到 MiuiBottomDecoration.smali"
+      exit 1
+    fi
     # 查找createBottomCaption_start_line
     local createBottomCaption_start_line=$(grep -n -m 1 ".method private createBottomCaption()Lcom/android/wm/shell/multitasking/miuimultiwinswitch/miuiwindowdecor/MiuiBottomBarView;" "$MiuiBottomDecorationSmali" | cut -d: -f1)
+    echo "createBottomCaption_start_line=$createBottomCaption_start_line"
     # 从createBottomCaption_start_line开始查找第一个.end method行号
     local createBottomCaption_end_line=$(tail -n +"$createBottomCaption_start_line" $MiuiBottomDecorationSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    echo "createBottomCaption_end_line=$createBottomCaption_end_line"
     # 计算.end method的行号
     local actual_createBottomCaption_end_line=$((createBottomCaption_start_line + createBottomCaption_end_line - 1))
+    echo "actual_createBottomCaption_end_line=$actual_createBottomCaption_end_line"
     # 删除原方法
     sed -i "${createBottomCaption_start_line},${actual_createBottomCaption_end_line}d" $MiuiBottomDecorationSmali
     # 插入Patch后的方法
@@ -284,10 +296,13 @@ patch_A14_ImmerseFreeformBottomCaption() {
     
     # 查找inBottomCaptionInsetsBlackList_start_line
     local inBottomCaptionInsetsBlackList_start_line=$(grep -n -m 1 ".method private inBottomCaptionInsetsBlackList()Z" "$MiuiBaseWindowDecorationSmali" | cut -d: -f1)
+    echo "inBottomCaptionInsetsBlackList_start_line=$inBottomCaptionInsetsBlackList_start_line"
     # 从createBottomCaption_start_line开始查找第一个.end method行号
     local inBottomCaptionInsetsBlackList_end_line=$(tail -n +"$inBottomCaptionInsetsBlackList_start_line" $MiuiBaseWindowDecorationSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    echo "inBottomCaptionInsetsBlackList_end_line=$inBottomCaptionInsetsBlackList_end_line"
     # 计算.end method的行号
     local actual_inBottomCaptionInsetsBlackList_end_line=$((inBottomCaptionInsetsBlackList_start_line + inBottomCaptionInsetsBlackList_end_line - 1))
+    echo "actual_inBottomCaptionInsetsBlackList_end_line=$actual_inBottomCaptionInsetsBlackList_end_line"
     # 删除原方法
     sed -i "${inBottomCaptionInsetsBlackList_start_line},${actual_inBottomCaptionInsetsBlackList_end_line}d" $MiuiBaseWindowDecorationSmali
     # 插入Patch后的方法
@@ -308,10 +323,13 @@ patch_ImmerseFreeformBottomCaption() {
 
     # 查找inBottomCaptionInsetsBlackList_start_line
     local inBottomCaptionInsetsBlackList_start_line=$(grep -n -m 1 ".method private inBottomCaptionInsetsBlackList()Z" "$MiuiBottomDecorationSmali" | cut -d: -f1)
+    echo "inBottomCaptionInsetsBlackList_start_line=$inBottomCaptionInsetsBlackList_start_line"
     # 从createBottomCaption_start_line开始查找第一个.end method行号
     local inBottomCaptionInsetsBlackList_end_line=$(tail -n +"$inBottomCaptionInsetsBlackList_start_line" $MiuiBottomDecorationSmali | grep -n -m 1 ".end method" | cut -d: -f1)
+    echo "inBottomCaptionInsetsBlackList_end_line=$inBottomCaptionInsetsBlackList_end_line"
     # 计算.end method的行号
     local actual_inBottomCaptionInsetsBlackList_end_line=$((inBottomCaptionInsetsBlackList_start_line + inBottomCaptionInsetsBlackList_end_line - 1))
+    echo "actual_inBottomCaptionInsetsBlackList_end_line=$actual_inBottomCaptionInsetsBlackList_end_line"
     # 删除原方法
     sed -i "${inBottomCaptionInsetsBlackList_start_line},${actual_inBottomCaptionInsetsBlackList_end_line}d" $MiuiBottomDecorationSmali
     # 插入Patch后的方法

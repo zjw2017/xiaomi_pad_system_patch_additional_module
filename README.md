@@ -184,7 +184,7 @@ product/etc/dot_black_list.json 0 0 0644
 
 > ✅ 否则窗口控制器将无法生效，严重时可能卡 MI。
 
-### 2️⃣ 所有 system.prop 属性应写入 `/product/etc/build.prop` 权限
+### 2️⃣ 所有 system.prop 属性应写入 `/product/etc/build.prop` 
 
 为确保属性生效，请将所有模块在 `system.prop` 定义的属性写入：
 
