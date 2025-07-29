@@ -76,11 +76,16 @@
     iget-object v0, v0, Lcom/android/server/wm/MiuiFreeFormManagerService;->mActivityTaskManagerService:Lcom/android/server/wm/ActivityTaskManagerService;
     iget-object v0, v0, Lcom/android/server/wm/ActivityTaskManagerService;->mContext:Landroid/content/Context;
 
-    # if (MiuiDesktopModeUtils.isActive(context)) return getMiuiDesktopModeMaxFreeformCount();
+    # 兼容 isActive(Context) 和 isDesktopActive()
     invoke-static {v0}, Lcom/android/server/wm/MiuiDesktopModeUtils;->isActive(Landroid/content/Context;)Z
+    move-result v1
+    if-nez v1, :desktop_active
+
+    invoke-static {}, Lcom/android/server/wm/MiuiDesktopModeUtils;->isDesktopActive()Z
     move-result v1
     if-eqz v1, :check_multi_support
 
+    :desktop_active
     invoke-static {}, Lcom/android/server/wm/MiuiFreeFormStackDisplayStrategy;->getMiuiDesktopModeMaxFreeformCount()I
     move-result v0
     return v0
