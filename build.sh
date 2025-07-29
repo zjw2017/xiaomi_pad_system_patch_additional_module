@@ -78,67 +78,67 @@ if [[ "$input_image_fs" != "erofs" && "$input_image_fs" != "ext4" ]]; then
 fi
 
 
-# echo "🧹 清理并准备临时目录..."
-# sudo rm -rf "$TMPDir"
-# mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
+echo "🧹 清理并准备临时目录..."
+sudo rm -rf "$TMPDir"
+mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
 
-# echo "🔍 检查 payload_dumper 是否可用..."
-# if ! command -v payload_dumper >/dev/null 2>&1; then
-#   echo "❌ 错误：payload_dumper 未安装或不在 PATH 中。" >&2
-#   echo "请安装它，例如：" >&2
-#   echo "  pipx install git+https://github.com/5ec1cff/payload-dumper" >&2
-#   exit 1
-# fi
+echo "🔍 检查 payload_dumper 是否可用..."
+if ! command -v payload_dumper >/dev/null 2>&1; then
+  echo "❌ 错误：payload_dumper 未安装或不在 PATH 中。" >&2
+  echo "请安装它，例如：" >&2
+  echo "  pipx install git+https://github.com/5ec1cff/payload-dumper" >&2
+  exit 1
+fi
 
-# echo "⬇️ 获取 system_ext.img..."
-# payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
+echo "⬇️ 获取 system_ext.img..."
+payload_dumper --partitions system_ext --out "$payload_img_dir" "$input_rom_url"
 
-# if [ ! -f "${payload_img_dir}system_ext.img" ]; then
-#   echo "❌ 找不到 system_ext.img" >&2
-#   exit 1
-# fi
+if [ ! -f "${payload_img_dir}system_ext.img" ]; then
+  echo "❌ 找不到 system_ext.img" >&2
+  exit 1
+fi
 
-# # 根据镜像格式选择工具
-# if [[ "$input_image_fs" == "erofs" ]]; then
-#   echo "📦 使用 extract.erofs 解包 system_ext.img..."
-#   "$ExtractErofs" \
-#     -i "${payload_img_dir}system_ext.img" \
-#     -x -c "$workfile/common/system_ext_unpak_list.txt" \
-#     -o "$pre_patch_file_dir"
+# 根据镜像格式选择工具
+if [[ "$input_image_fs" == "erofs" ]]; then
+  echo "📦 使用 extract.erofs 解包 system_ext.img..."
+  "$ExtractErofs" \
+    -i "${payload_img_dir}system_ext.img" \
+    -x -c "$workfile/common/system_ext_unpak_list.txt" \
+    -o "$pre_patch_file_dir"
 
-# elif [[ "$input_image_fs" == "ext4" ]]; then
-#   echo "📦 使用 imgextractorLinux 解包 system_ext.img..."
-#   sudo "$ImageExtRactorLinux" "${payload_img_dir}system_ext.img" "$pre_patch_file_dir"
-# else
-#   echo "❌ 不支持的镜像解压方式: $input_image_fs"
-#   exit 1
-# fi
+elif [[ "$input_image_fs" == "ext4" ]]; then
+  echo "📦 使用 imgextractorLinux 解包 system_ext.img..."
+  sudo "$ImageExtRactorLinux" "${payload_img_dir}system_ext.img" "$pre_patch_file_dir"
+else
+  echo "❌ 不支持的镜像解压方式: $input_image_fs"
+  exit 1
+fi
 
-# # 检查提取文件
-# system_ext_unpak_list_file="$workfile/common/system_ext_unpak_list.txt"
-# echo "✅ 校验解包文件是否提取成功..."
+# 检查提取文件
+system_ext_unpak_list_file="$workfile/common/system_ext_unpak_list.txt"
+echo "✅ 校验解包文件是否提取成功..."
 
-# if [ ! -f "$system_ext_unpak_list_file" ]; then
-#   echo "❌ 缺失列表文件: $system_ext_unpak_list_file" >&2
-#   exit 1
-# fi
+if [ ! -f "$system_ext_unpak_list_file" ]; then
+  echo "❌ 缺失列表文件: $system_ext_unpak_list_file" >&2
+  exit 1
+fi
 
-# while IFS= read -r line || [[ -n "$line" ]]; do
-#   file=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-#   [ -z "$file" ] && continue
+while IFS= read -r line || [[ -n "$line" ]]; do
+  file=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+  [ -z "$file" ] && continue
 
-#   full_path="${pre_patch_file_dir}system_ext${file}"
+  full_path="${pre_patch_file_dir}system_ext${file}"
 
-#   echo "🔍 检查文件: $full_path"
+  echo "🔍 检查文件: $full_path"
 
-#   if [ ! -f "$full_path" ]; then
-#     echo "❌ 缺失文件: system_ext${file}" >&2
-#     exit 1
-#   fi
-# done < "$system_ext_unpak_list_file"
+  if [ ! -f "$full_path" ]; then
+    echo "❌ 缺失文件: system_ext${file}" >&2
+    exit 1
+  fi
+done < "$system_ext_unpak_list_file"
 
-# echo "📁 复制补丁模组源码..."
-# cp -a "$workfile/mods/." "$patch_mods_dir"
+echo "📁 复制补丁模组源码..."
+cp -a "$workfile/mods/." "$patch_mods_dir"
 
 echo "🛠️ 修补 miui-services.jar..."
 cp -f "${pre_patch_file_dir}system_ext/framework/miui-services.jar" "${patch_mods_dir}/miui-services-Smali/miui-services.jar"
