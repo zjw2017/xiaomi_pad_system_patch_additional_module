@@ -11,8 +11,8 @@ LICENSE text eol=lf
 *.sh text eol=lf
 
 # 模块文件
-module_src/META-INF/com/google/android/update-binary
-module_src/META-INF/com/google/android/updater-script
+module_src/META-INF/com/google/android/update-binary text eol=lf
+module_src/META-INF/com/google/android/updater-script text eol=lf
 
 # 模块属性文件
 *.prop text eol=lf
@@ -28,7 +28,3 @@ module_src/META-INF/com/google/android/updater-script
 
 # smali文件
 *.smali text eol=lf
-
-# META-INF目录下的脚本文件
-META/com/google/android/* text eol=lf
-
