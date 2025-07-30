@@ -204,6 +204,8 @@ product/etc/dot_black_list.json 0 0 0644
 
 欢迎提交 PR 支持更多功能或适配新设备！
 
+@zjw2017
+
 ---
 
 ## 🛠 技术说明
