@@ -1,4 +1,5 @@
 # 小米平板6 Pro
+--rom "OS2.0.207.0.VMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.207.0.VMYCNXM/liuqin-ota_full-OS2.0.207.0.VMYCNXM-user-15.0-9f8a119635.zip" --android 15 --fs erofs --device "Xiaomi Pad 6 Pro"
 --rom "OS2.0.203.0.VMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.203.0.VMYCNXM/liuqin-ota_full-OS2.0.203.0.VMYCNXM-user-15.0-79c1639861.zip" --android 15 --fs erofs --device "Xiaomi Pad 6 Pro"
 --rom "OS1.0.14.0.UMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.14.0.UMYCNXM/miui_LIUQIN_OS1.0.14.0.UMYCNXM_fee88382c1_14.0.zip" --android 14 --fs erofs --device "Xiaomi Pad 6 Pro"
 --rom "OS1.0.12.0.UMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.12.0.UMYCNXM/miui_LIUQIN_OS1.0.12.0.UMYCNXM_d1f94db059_14.0.zip" --android 14 --fs erofs --device "Xiaomi Pad 6 Pro"
