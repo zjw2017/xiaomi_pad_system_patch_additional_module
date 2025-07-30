@@ -21,7 +21,6 @@ release_dir="${TMPDir}release/"
 # 参数初始化
 input_rom_version=""
 input_rom_url=""
-input_android_target_version="15" # 默认值
 
 # 参数解析
 while [[ $# -gt 0 ]]; do
@@ -34,10 +33,6 @@ while [[ $# -gt 0 ]]; do
     input_rom_url="$2"
     shift 2
     ;;
-  --android)
-    input_android_target_version="$2"
-    shift 2
-    ;;
   *)
     echo "❌ 未知参数: $1"
     exit 1
@@ -48,20 +43,9 @@ done
 # 检查必须参数
 if [[ -z "$input_rom_version" || -z "$input_rom_url" ]]; then
   echo "❌ 错误：必须提供 --rom 和 --url 参数。" >&2
-  echo "用法：bash ./build.sh --rom <ROM_VERSION> --url <ROM_URL> [--android <ANDROID_VERSION>]" >&2
+  echo "用法：bash ./build.sh --rom <ROM_VERSION> --url <ROM_URL>" >&2
   exit 1
 fi
-
-# 校验 Android 版本，目前仅支持 14 和 15，保留未来扩展空间
-case "$input_android_target_version" in
-14 | 15)
-  # 支持的版本，继续执行
-  ;;
-*)
-  echo "❌ 错误：不支持的 Android 版本：$input_android_target_version，仅支持 14 或 15。" >&2
-  exit 1
-  ;;
-esac
 
 echo "🧹 清理并准备临时目录..."
 sudo rm -rf "$TMPDir"
@@ -115,6 +99,20 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     exit 1
   fi
 done <"$system_ext_unpak_list_file"
+
+input_android_target_version=$(grep ro.system_ext.build.version.release= ${pre_patch_file_dir}system_ext/etc/build.prop | cut -d'=' -f2)
+rm -rf ${pre_patch_file_dir}system_ext/etc/build.prop
+
+# 校验 Android 版本，目前仅支持 14 和 15，保留未来扩展空间
+case "$input_android_target_version" in
+14 | 15)
+  # 支持的版本，继续执行
+  ;;
+*)
+  echo "❌ 错误：不支持的 Android 版本：$input_android_target_version，仅支持 14 或 15。" >&2
+  exit 1
+  ;;
+esac
 
 echo "📁 复制补丁模组源码..."
 cp -a "$workfile/mods/." "$patch_mods_dir"

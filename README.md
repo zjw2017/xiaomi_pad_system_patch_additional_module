@@ -93,7 +93,6 @@
 | --------- | -------------------------------------------- | ----------------- |
 | `rom`     | `OS2.0.202.0.VOZCNXM`                        | ROM 版本号        |
 | `url`     | `https://bigota.d.miui.com/xxx/miui_xxx.zip` | 官方 ROM 下载链接 |
-| `android` | `15` 或 `14`（可选）                         | Android 版本      |
 
 📥 ROM 下载推荐：[https://hyperos.fans/](https://hyperos.fans/)
 

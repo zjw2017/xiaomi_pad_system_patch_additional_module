@@ -11,8 +11,3 @@ wait_login() {
   done
 }
 wait_login
-
-. "$MODDIR"/util_functions.sh
-api_level_arch_detect
-
-

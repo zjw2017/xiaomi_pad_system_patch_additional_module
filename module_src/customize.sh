@@ -1,7 +1,6 @@
 # shellcheck disable=SC2148,SC2034,SC1091,SC2059
 SKIPUNZIP=0
 . "$MODPATH"/util_functions.sh
-api_level_arch_detect
 magisk_path=/data/adb/modules/
 module_id=$(grep_prop id "$MODPATH/module.prop")
 

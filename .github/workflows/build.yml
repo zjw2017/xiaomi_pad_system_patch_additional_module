@@ -9,14 +9,6 @@ on:
       url:
         description: 'ROM 下载链接'
         required: true
-      android:
-        description: '目标 Android 版本'
-        required: false
-        default: '15'
-        type: choice
-        options:
-          - '15'
-          - '14'
 
 jobs:
   build:
@@ -34,8 +26,7 @@ jobs:
       - name: 🧪 构建模块
         run: |
           bash ./build.sh --rom "${{ github.event.inputs.rom }}" \
-                          --url "${{ github.event.inputs.url }}" \
-                          --android "${{ github.event.inputs.android }}"
+                          --url "${{ github.event.inputs.url }}"
 
       - name: 📦 上传构建产物
         uses: actions/upload-artifact@v4

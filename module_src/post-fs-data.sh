@@ -1,18 +1,17 @@
 # shellcheck disable=SC2148,SC1091
 MODDIR=${0%/*}
 . "$MODDIR/util_functions.sh"
-api_level_arch_detect
 
 prop_file="/mi_ext/etc/build.prop"
 module_prop="$MODDIR/module.prop"
 log_file="$MODDIR/log.txt"
 
 # 每次运行前清除旧日志
-rm -f "$log_file" 
+rm -f "$log_file"
 
 # 写入日志
 log_reason() {
-    echo "[$(date +%s)] $1" >> "$log_file"
+    echo "[$(date +%s)] $1" >>"$log_file"
 }
 
 # 禁用模块并记录原因

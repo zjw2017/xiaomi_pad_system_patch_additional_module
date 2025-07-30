@@ -53,12 +53,8 @@ jobs:
         run: |
           url=$(jq -r --arg device "${{ matrix.device }}" --arg rom "${{ matrix.rom }}" '
             .[$device][] | select(.rom == $rom) | .url' batch_rom_list.json)
-          android=$(jq -r --arg device "${{ matrix.device }}" --arg rom "${{ matrix.rom }}" '
-            .[$device][] | select(.rom == $rom) | .android' batch_rom_list.json)
           bash ./build.sh --rom "${{ matrix.rom }}" \
-                          --url "$url" \
-                          --android "$android"
-
+                          --url "$url"
       - name: 📦 上传构建产物
         uses: actions/upload-artifact@v4
         with:
