@@ -29,3 +29,6 @@ module_src/META-INF/com/google/android/updater-script
 # smali文件
 *.smali text eol=lf
 
+# META-INF目录下的脚本文件
+META/com/google/android/* text eol=lf
+
