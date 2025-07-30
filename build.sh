@@ -52,6 +52,9 @@ sudo rm -rf "$TMPDir"
 mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
 
 echo "⬇️ 获取 system_ext.img..."
+# 本地测试用例，使用时需修改 TARGET_ZIP_NAME 值并放置 ROM 包 ，同时 **取消注释下面两条语句** 和 **注释原来的 PayloadExtract 语句**
+# TARGET_ZIP_NAME="sheng-ota_full-OS2.0.205.0.VNXCNXM-user-15.0-ff1ab1912a.zip"
+# $PayloadExtract -i "$TARGET_ZIP_NAME" -t zip -o "$payload_img_dir" -X system_ext
 $PayloadExtract -i "$input_rom_url" -t url -o "$payload_img_dir" -X system_ext
 
 if [ ! -f "${payload_img_dir}system_ext.img" ]; then
@@ -60,16 +63,16 @@ if [ ! -f "${payload_img_dir}system_ext.img" ]; then
 fi
 
 # 根据镜像格式选择工具
-if [[ $("$GetType" -i "${payload_img_dir}system_ext.img") == "erofs" ]]; then
+img_type=$("$GetType" -i "${payload_img_dir}system_ext.img")
+if [[ "$img_type" == "erofs" ]]; then
   echo "📦 使用 extract.erofs 解包 system_ext.img..."
   "$ExtractErofs" \
     -i "${payload_img_dir}system_ext.img" \
     -x -c "$workfile/common/system_ext_unpak_list.txt" \
     -o "$pre_patch_file_dir"
-elif [[ $("$GetType" -i "${payload_img_dir}system_ext.img") == "ext" ]]; then
+elif [[ "$img_type" == "ext" ]]; then
   echo "📦 使用 imgextractorLinux 解包 system_ext.img..."
   sudo "$ExtractExt4" "${payload_img_dir}system_ext.img" "$pre_patch_file_dir"
-
 fi
 
 # 检查提取文件
@@ -95,8 +98,19 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   fi
 done <"$system_ext_unpak_list_file"
 
+if [[ "$img_type" == "ext" ]]; then
+  mkdir -p $workfile/tmp_ext4/system_ext/framework $workfile/tmp_ext4/system_ext/priv-app/MiuiSystemUI $workfile/tmp_ext4/system_ext/etc
+  sudo cp -rf ${pre_patch_file_dir}system_ext/framework/miui-services.jar $workfile/tmp_ext4/system_ext/framework
+  sudo cp -rf ${pre_patch_file_dir}system_ext/priv-app/MiuiSystemUI/MiuiSystemUI.apk $workfile/tmp_ext4/system_ext/priv-app/MiuiSystemUI
+  sudo cp -rf ${pre_patch_file_dir}system_ext/etc/build.prop $workfile/tmp_ext4/system_ext/etc
+  sudo rm -rf ${pre_patch_file_dir}system_ext/*
+  sudo cp -rf $workfile/tmp_ext4/system_ext/* ${pre_patch_file_dir}system_ext/
+  sudo rm -rf $workfile/tmp_ext4
+fi
+sudo chmod -R 777 ${pre_patch_file_dir}system_ext
+
 input_android_target_version=$(grep ro.system_ext.build.version.release= ${pre_patch_file_dir}system_ext/etc/build.prop | cut -d'=' -f2)
-rm -rf ${pre_patch_file_dir}system_ext/etc/build.prop
+rm -rf ${pre_patch_file_dir}system_ext/etc
 
 # 校验 Android 版本，目前仅支持 14 和 15，保留未来扩展空间
 case "$input_android_target_version" in
