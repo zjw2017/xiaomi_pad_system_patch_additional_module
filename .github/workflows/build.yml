@@ -21,7 +21,7 @@ jobs:
       - name: 🛠 安装依赖
         run: |
           sudo apt update
-          sudo apt-get install -y aria2 zip unzip
+          sudo apt-get install -y zip unzip
 
       - name: 🧪 构建模块
         run: |

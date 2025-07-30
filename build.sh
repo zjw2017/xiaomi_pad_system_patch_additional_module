@@ -7,7 +7,7 @@ workfile="$(cd "$(dirname "$0")" && pwd)"
 ExtractErofs="$workfile/common/binary/extract.erofs"
 ExtractExt4="$workfile/common/binary/imgextractorLinux"
 GetType="$workfile/common/binary/gettype"
-PayloadExtractor="$workfile/common/binary/payload_extract"
+PayloadExtract="$workfile/common/binary/payload_extract"
 sudo chmod -R 777 "$workfile/common/binary/"
 
 # 工作目录和输出目录
@@ -51,13 +51,8 @@ echo "🧹 清理并准备临时目录..."
 sudo rm -rf "$TMPDir"
 mkdir -p "$TMPDir" "$DistDir" "$payload_img_dir" "$pre_patch_file_dir" "$patch_mods_dir" "$release_dir"
 
-echo "⬇️ 下载 ROM 文件..."
-aria2c -x16 -j"$(nproc)" -U "Mozilla/5.0" -d "$GITHUB_WORKSPACE" "$input_rom_url"
-TARGET_ZIP_NAME=$(echo "$input_rom_url" | cut -d"?" -f1 | cut -d"/" -f5)
-
 echo "⬇️ 获取 system_ext.img..."
-$PayloadExtractor -i "$TARGET_ZIP_NAME" -t zip -o "$payload_img_dir" -X system_ext
-rm -rf "$TARGET_ZIP_NAME"
+$PayloadExtract -i "$input_rom_url" -t url -o "$payload_img_dir" -X system_ext
 
 if [ ! -f "${payload_img_dir}system_ext.img" ]; then
   echo "❌ 找不到 system_ext.img" >&2

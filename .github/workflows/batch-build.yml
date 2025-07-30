@@ -47,7 +47,7 @@ jobs:
       - name: 🛠 安装依赖
         run: |
           sudo apt update
-          sudo apt-get install -y aria2 zip unzip
+          sudo apt-get install -y zip unzip
 
       - name: 🚀 执行批量构建
         run: |
