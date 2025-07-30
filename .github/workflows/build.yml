@@ -17,14 +17,6 @@ on:
         options:
           - '15'
           - '14'
-      fs:
-        description: '镜像解压方式 (米板5系列通常为ext4)'
-        required: false
-        default: 'erofs'
-        type: choice
-        options:
-          - erofs
-          - ext4
 
 jobs:
   build:
@@ -37,17 +29,13 @@ jobs:
       - name: 🛠 安装依赖
         run: |
           sudo apt update
-          sudo apt install -y zip unzip python3-pip
-          pip install --user pipx
-          pipx ensurepath
-          pipx install git+https://github.com/5ec1cff/payload-dumper
+          sudo apt-get install -y aria2 zip unzip
 
       - name: 🧪 构建模块
         run: |
           bash ./build.sh --rom "${{ github.event.inputs.rom }}" \
                           --url "${{ github.event.inputs.url }}" \
-                          --android "${{ github.event.inputs.android }}" \
-                          --fs "${{ github.event.inputs.fs }}"
+                          --android "${{ github.event.inputs.android }}"
 
       - name: 📦 上传构建产物
         uses: actions/upload-artifact@v4

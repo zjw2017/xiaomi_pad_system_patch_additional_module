@@ -14,10 +14,7 @@ jobs:
       - name: 🛠 安装依赖
         run: |
           sudo apt update
-          sudo apt install -y zip unzip python3-pip
-          pip install --user pipx
-          pipx ensurepath
-          pipx install git+https://github.com/5ec1cff/payload-dumper
+          sudo apt-get install -y aria2 zip unzip
 
       - name: 🚀 执行批量构建
         run: |

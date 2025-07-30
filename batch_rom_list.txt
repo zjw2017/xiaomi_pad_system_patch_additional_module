@@ -1,25 +1,25 @@
 # 小米平板6 Pro
---rom "OS2.0.207.0.VMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.207.0.VMYCNXM/liuqin-ota_full-OS2.0.207.0.VMYCNXM-user-15.0-9f8a119635.zip" --android 15 --fs erofs --device "Xiaomi Pad 6 Pro"
---rom "OS2.0.203.0.VMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.203.0.VMYCNXM/liuqin-ota_full-OS2.0.203.0.VMYCNXM-user-15.0-79c1639861.zip" --android 15 --fs erofs --device "Xiaomi Pad 6 Pro"
---rom "OS1.0.14.0.UMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.14.0.UMYCNXM/miui_LIUQIN_OS1.0.14.0.UMYCNXM_fee88382c1_14.0.zip" --android 14 --fs erofs --device "Xiaomi Pad 6 Pro"
---rom "OS1.0.12.0.UMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.12.0.UMYCNXM/miui_LIUQIN_OS1.0.12.0.UMYCNXM_d1f94db059_14.0.zip" --android 14 --fs erofs --device "Xiaomi Pad 6 Pro"
+--rom "OS2.0.207.0.VMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.207.0.VMYCNXM/liuqin-ota_full-OS2.0.207.0.VMYCNXM-user-15.0-9f8a119635.zip" --android 15 --device "Xiaomi Pad 6 Pro"
+--rom "OS2.0.203.0.VMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.203.0.VMYCNXM/liuqin-ota_full-OS2.0.203.0.VMYCNXM-user-15.0-79c1639861.zip" --android 15 --device "Xiaomi Pad 6 Pro"
+--rom "OS1.0.14.0.UMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.14.0.UMYCNXM/miui_LIUQIN_OS1.0.14.0.UMYCNXM_fee88382c1_14.0.zip" --android 14 --device "Xiaomi Pad 6 Pro"
+--rom "OS1.0.12.0.UMYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.12.0.UMYCNXM/miui_LIUQIN_OS1.0.12.0.UMYCNXM_d1f94db059_14.0.zip" --android 14 --device "Xiaomi Pad 6 Pro"
 # 小米平板6S Pro
---rom "OS2.0.205.0.VNXCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.205.0.VNXCNXM/sheng-ota_full-OS2.0.205.0.VNXCNXM-user-15.0-ff1ab1912a.zip" --android 15 --fs erofs --device "Xiaomi Pad 6S Pro"
---rom "OS2.0.204.0.VNXCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.204.0.VNXCNXM/sheng-ota_full-OS2.0.204.0.VNXCNXM-user-15.0-e535f2e9a1.zip" --android 15 --fs erofs --device "Xiaomi Pad 6S Pro"
---rom "OS1.0.11.0.UNXCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.11.0.UNXCNXM/miui_SHENG_OS1.0.11.0.UNXCNXM_921ff6036a_14.0.zip" --android 14 --fs erofs --device "Xiaomi Pad 6S Pro"
+--rom "OS2.0.205.0.VNXCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.205.0.VNXCNXM/sheng-ota_full-OS2.0.205.0.VNXCNXM-user-15.0-ff1ab1912a.zip" --android 15 --device "Xiaomi Pad 6S Pro"
+--rom "OS2.0.204.0.VNXCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.204.0.VNXCNXM/sheng-ota_full-OS2.0.204.0.VNXCNXM-user-15.0-e535f2e9a1.zip" --android 15 --device "Xiaomi Pad 6S Pro"
+--rom "OS1.0.11.0.UNXCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.11.0.UNXCNXM/miui_SHENG_OS1.0.11.0.UNXCNXM_921ff6036a_14.0.zip" --android 14 --device "Xiaomi Pad 6S Pro"
 # 小米平板6 Max
---rom "OS2.0.203.0.VMHCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.203.0.VMHCNXM/yudi-ota_full-OS2.0.203.0.VMHCNXM-user-15.0-4e5f2843a0.zip" --android 15 --fs erofs --device "Xiaomi Pad 6 Max"
+--rom "OS2.0.203.0.VMHCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.203.0.VMHCNXM/yudi-ota_full-OS2.0.203.0.VMHCNXM-user-15.0-4e5f2843a0.zip" --android 15 --device "Xiaomi Pad 6 Max"
 # 小米平板7
---rom "OS2.0.202.0.VOZCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.202.0.VOZCNXM/uke-ota_full-OS2.0.202.0.VOZCNXM-user-15.0-92b8c5ed49.zip" --android 15 --fs erofs --device "Xiaomi Pad 7"
+--rom "OS2.0.202.0.VOZCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.202.0.VOZCNXM/uke-ota_full-OS2.0.202.0.VOZCNXM-user-15.0-92b8c5ed49.zip" --android 15 --device "Xiaomi Pad 7"
 # 小米平板7 Pro
---rom "OS2.0.202.0.VOYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.202.0.VOYCNXM/muyu-ota_full-OS2.0.202.0.VOYCNXM-user-15.0-28354b5641.zip" --android 15 --fs erofs --device "Xiaomi Pad 7 Pro"
+--rom "OS2.0.202.0.VOYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.202.0.VOYCNXM/muyu-ota_full-OS2.0.202.0.VOYCNXM-user-15.0-28354b5641.zip" --android 15 --device "Xiaomi Pad 7 Pro"
 # 红米平板 K Pad
---rom "OS2.0.215.0.VAOCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.215.0.VAOCNXM/turner-ota_full-OS2.0.215.0.VAOCNXM-user-15.0-f7d3a8cd35.zip" --android 15 --fs erofs --device "Redmi K Pad"
+--rom "OS2.0.215.0.VAOCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.215.0.VAOCNXM/turner-ota_full-OS2.0.215.0.VAOCNXM-user-15.0-f7d3a8cd35.zip" --android 15 --device "Redmi K Pad"
 # 小米平板6
---rom "OS2.0.10.0.UMZCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.10.0.UMZCNXM/pipa-ota_full-OS2.0.10.0.UMZCNXM-user-14.0-0d89d2e7bf.zip" --android 14 --fs erofs --device "Xiaomi Pad 6"
+--rom "OS2.0.10.0.UMZCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.10.0.UMZCNXM/pipa-ota_full-OS2.0.10.0.UMZCNXM-user-14.0-0d89d2e7bf.zip" --android 14 --device "Xiaomi Pad 6"
 # 小米平板5 Pro 12.4
---rom "OS2.0.10.0.ULZCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.10.0.ULZCNXM/dagu-ota_full-OS2.0.10.0.ULZCNXM-user-14.0-041e9e8347.zip" --android 14 --fs ext4 --device "Xiaomi Pad 5 Pro 12.4"
+--rom "OS2.0.10.0.ULZCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.10.0.ULZCNXM/dagu-ota_full-OS2.0.10.0.ULZCNXM-user-14.0-041e9e8347.zip" --android 14 --device "Xiaomi Pad 5 Pro 12.4"
 # 红米平板
---rom "OS1.0.8.0.ULYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.8.0.ULYCNXM/miui_YUNLUO_OS1.0.8.0.ULYCNXM_0f98c0db8c_14.0.zip" --android 14 --fs erofs --device "Redmi Pad"
+--rom "OS1.0.8.0.ULYCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS1.0.8.0.ULYCNXM/miui_YUNLUO_OS1.0.8.0.ULYCNXM_0f98c0db8c_14.0.zip" --android 14 --device "Redmi Pad"
 # 红米平板 SE
---rom "OS2.0.203.0.VMUCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.203.0.VMUCNXM/xun-ota_full-OS2.0.203.0.VMUCNXM-user-15.0-b9461f3dd1.zip" --android 15 --fs erofs --device "Redmi Pad SE"
+--rom "OS2.0.203.0.VMUCNXM" --url "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/OS2.0.203.0.VMUCNXM/xun-ota_full-OS2.0.203.0.VMUCNXM-user-15.0-b9461f3dd1.zip" --android 15 --device "Redmi Pad SE"
