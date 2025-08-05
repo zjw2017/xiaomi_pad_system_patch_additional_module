@@ -2,7 +2,7 @@
 
 适用于小米平板的 **系统体验功能增强的 Magisk 模块**，提取 ROM 自动生成模块文件，提供部分系统体验增强功能。
 
-📱 当前支持 **Android 14 和 Android 15** 的 Hyper OS For Pad。
+当前支持 **Android 14 和 Android 15** 的 Hyper OS For Pad。
 
 ---
 
